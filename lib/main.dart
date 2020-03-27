@@ -1,15 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:snowmanchallenge/markers_provider.dart';
 import 'package:snowmanchallenge/models/tab.dart';
+import 'package:snowmanchallenge/pincolor_provider.dart';
 import 'package:snowmanchallenge/tabs/account_tab.dart';
 import 'package:snowmanchallenge/tabs/favorites_tab.dart';
 import 'package:snowmanchallenge/tabs/map_tab.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
 void main() {
-  runApp(MaterialApp(
-    home: Home(),
-    debugShowCheckedModeBanner: false,
-    theme: ThemeData(applyElevationOverlayColor: true),
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => MarkersProvider()),
+      ChangeNotifierProvider(create: (_) => PinColorProvider()),
+    ],
+    child: MaterialApp(
+      home: Home(),
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(applyElevationOverlayColor: true),
+    ),
   ));
 }
 

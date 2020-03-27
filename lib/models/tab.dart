@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AppTab {
@@ -7,6 +8,6 @@ class AppTab {
 
 const List<AppTab> allTabs = <AppTab>[
   AppTab(Icons.star),
-  AppTab(Icons.pin_drop),
-  AppTab(Icons.supervisor_account),
+  AppTab(CupertinoIcons.location_solid),
+  AppTab(CupertinoIcons.person_solid),
 ];

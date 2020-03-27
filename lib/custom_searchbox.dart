@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:snowmanchallenge/newspot_modal.dart';
 import 'package:snowmanchallenge/utils/custom_fonts.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
 class CustomSearchBox extends StatefulWidget {
+  const CustomSearchBox({@required this.dialogPressed});
+
+  final Widget dialogPressed;
+
   @override
   _CustomSearchBoxState createState() => _CustomSearchBoxState();
 }
@@ -71,9 +74,10 @@ class _CustomSearchBoxState extends State<CustomSearchBox> {
           Flexible(
             flex: 1,
             child: IconButton(
-                icon: Icon(Icons.add, color: HexColor('#757685'), size: 25),
-                onPressed: () => showDialog(
-                    context: context, builder: (context) => NewSpotModal())),
+              icon: Icon(Icons.add, color: HexColor('#757685'), size: 25),
+              onPressed: () => showDialog(
+                  context: context, builder: (context) => widget.dialogPressed),
+            ),
           )
         ],
       ),

@@ -1,9 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:snowmanchallenge/custom_colorpicker.dart';
+import 'package:snowmanchallenge/marker_modal.dart';
+import 'package:snowmanchallenge/markers_provider.dart';
+import 'package:snowmanchallenge/models/tourist_spot.dart';
+import 'package:snowmanchallenge/pincolor_provider.dart';
 import 'package:snowmanchallenge/utils/custom_fonts.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
 class NewSpotModal extends StatefulWidget {
+  const NewSpotModal({@required this.modalContext});
+
+  final BuildContext modalContext;
+
   @override
   _NewSpotModalState createState() => _NewSpotModalState();
 }
@@ -11,6 +23,21 @@ class NewSpotModal extends StatefulWidget {
 class _NewSpotModalState extends State<NewSpotModal> {
   TextEditingController _categoriesController = TextEditingController();
   TextEditingController _nameController = TextEditingController();
+  TextEditingController _locationController = TextEditingController();
+  TextEditingController _pinController;
+
+  @override
+  void didChangeDependencies() {
+    _pinController = TextEditingController(
+        text: '#' +
+            Provider.of<PinColorProvider>(context)
+                .currentColor
+                .toString()
+                .toUpperCase()
+                .substring(9)
+                .replaceAll(')', ''));
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,13 +109,15 @@ class _NewSpotModalState extends State<NewSpotModal> {
                       _buildCustomTextBox(
                           controller: _categoriesController, label: 'Category'),
                       _buildCustomTextBox(
-                        controller: _categoriesController,
+                        controller: _locationController,
                         label: 'Location',
                         isLocationTextBox: true,
                       ),
                       _buildCustomTextBox(
-                          controller: _categoriesController,
-                          label: 'Pin Color'),
+                        controller: _pinController,
+                        label: 'Pin Color',
+                        isColorPicker: true,
+                      ),
                       _buildAddButton(),
                     ],
                   ),
@@ -105,6 +134,7 @@ class _NewSpotModalState extends State<NewSpotModal> {
     String label,
     TextEditingController controller,
     bool isLocationTextBox = false,
+    bool isColorPicker = false,
   }) {
     return Stack(
       overflow: Overflow.visible,
@@ -113,7 +143,7 @@ class _NewSpotModalState extends State<NewSpotModal> {
           children: <Widget>[
             Container(
               width: MediaQuery.of(context).size.width * 0.70,
-              height: MediaQuery.of(context).size.height * 0.08,
+              height: MediaQuery.of(context).size.height * 0.07,
               child: Column(
                 children: <Widget>[
                   Expanded(
@@ -125,10 +155,36 @@ class _NewSpotModalState extends State<NewSpotModal> {
                               style: BorderStyle.solid,
                               color: HexColor('#757685').withOpacity(0.60),
                               width: 1.0)),
-                      child: TextField(
-                        controller: controller,
-                        cursorColor: Colors.black,
-                        decoration: InputDecoration(border: InputBorder.none),
+                      child: Consumer<PinColorProvider>(
+                        builder: (context, provider, child) => TextField(
+                          controller: controller,
+                          cursorColor: Colors.black,
+                          readOnly: isColorPicker,
+                          onTap: isColorPicker ? () => _colorPicker() : null,
+                          onSubmitted: isLocationTextBox
+                              ? (location) =>
+                                  _getLatLng(_locationController.text)
+                              : null,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            suffixIcon: isLocationTextBox
+                                ? Icon(
+                                    CupertinoIcons.location_solid,
+                                    color: HexColor('#10159A'),
+                                  )
+                                : isColorPicker
+                                    ? Container(
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: provider.currentColor),
+                                        width: 5,
+                                        height: 5,
+                                        margin:
+                                            EdgeInsets.only(top: 6, bottom: 6),
+                                      )
+                                    : null,
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -154,11 +210,17 @@ class _NewSpotModalState extends State<NewSpotModal> {
     );
   }
 
+  _colorPicker() {
+    print('TAP COLOR');
+    return showDialog(
+      context: context,
+      child: CustomColorPicker(),
+    );
+  }
+
   _buildAddButton() {
     return InkWell(
-      onTap: () {
-        Navigator.pop(context);
-      },
+      onTap: () => _addMarker(),
       child: Container(
         width: MediaQuery.of(context).size.width * 0.70,
         height: MediaQuery.of(context).size.height * 0.08,
@@ -183,5 +245,67 @@ class _NewSpotModalState extends State<NewSpotModal> {
         ),
       ),
     );
+  }
+
+  _getLatLng(String position) async {
+    /*
+    var p = PlacesAutocomplete.show(
+        context: context,
+        apiKey: 'AIzaSyCNw5Rdu6Ai7Nk_m8-oyLu6Bv0fPqTbYoM',
+        mode: Mode.overlay,
+        language: 'pt');
+
+
+     */
+    return await Geolocator()
+        .placemarkFromAddress(position, localeIdentifier: 'pt_BR');
+  }
+
+  _addMarker() async {
+    LocationOptions(forceAndroidLocationManager: true);
+
+    var position = await Geolocator().placemarkFromAddress(
+      _locationController.text,
+      localeIdentifier: 'pt_BR',
+    );
+
+    LatLng latLng = LatLng(
+        position.first.position.latitude, position.first.position.longitude);
+
+    TouristSpot newSpot = TouristSpot(
+      title: _nameController.text,
+      location: _locationController.text,
+      rating: 0,
+      isFavorite: false,
+      mainPicture: '',
+      category: _categoriesController.text,
+      pinColor:
+          Provider.of<PinColorProvider>(context, listen: false).currentColor,
+    );
+
+    Marker marker = Marker(
+      markerId: MarkerId(position.toString()),
+      position: latLng,
+      consumeTapEvents: true,
+      icon: BitmapDescriptor.defaultMarkerWithHue(HSVColor.fromColor(
+              Provider.of<PinColorProvider>(context, listen: false)
+                  .currentColor)
+          .hue),
+      onTap: () {
+        print('BITMAP COLOR: ' + BitmapDescriptor.defaultMarkerWithHue(HSVColor.fromColor(
+                    Provider.of<PinColorProvider>(context, listen: false)
+                        .currentColor)
+                .hue)
+            .toString());
+        return showModalBottomSheet(
+          context: widget.modalContext,
+          builder: (context) => MarkerModal(touristSpot: newSpot),
+        );
+      },
+    );
+
+    Provider.of<MarkersProvider>(context, listen: false).addNewMarker(marker);
+
+    Navigator.pop(context);
   }
 }
