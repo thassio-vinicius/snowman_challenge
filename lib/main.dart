@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:snowmanchallenge/markers_provider.dart';
 import 'package:snowmanchallenge/models/tab.dart';
-import 'package:snowmanchallenge/pincolor_provider.dart';
+import 'package:snowmanchallenge/providers/pincolor_provider.dart';
 import 'package:snowmanchallenge/tabs/account_tab.dart';
 import 'package:snowmanchallenge/tabs/favorites_tab.dart';
 import 'package:snowmanchallenge/tabs/map_tab.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
+import 'package:snowmanchallenge/providers/markers_provider.dart';
 
 void main() {
   runApp(MultiProvider(

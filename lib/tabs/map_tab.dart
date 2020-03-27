@@ -6,9 +6,10 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:snowmanchallenge/custom_searchbox.dart';
 import 'package:snowmanchallenge/marker_modal.dart';
-import 'package:snowmanchallenge/markers_provider.dart';
 import 'package:snowmanchallenge/models/tourist_spot.dart';
-import 'package:snowmanchallenge/newspot_modal.dart';
+
+import 'package:snowmanchallenge/features/add_marker/newspot_modal.dart';
+import 'package:snowmanchallenge/providers/markers_provider.dart';
 
 class MapTab extends StatefulWidget {
   @override
