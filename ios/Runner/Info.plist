@@ -23,6 +23,12 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
+	<key>NSCameraUsageDescription</key>
+    <string>Enable Snowman Challenge to access your camera to capture your photo</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Enable Snowman Challenge to access your gallery</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Enable Snowman Challenge to access your mic and record your voice</string>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>

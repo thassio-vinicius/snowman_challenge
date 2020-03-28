@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:snowmanchallenge/providers/pincolor_provider.dart';
+import 'package:snowmanchallenge/utils/custom_fonts.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
 class CustomMarkerTextBox extends StatelessWidget {
@@ -46,6 +47,11 @@ class CustomMarkerTextBox extends StatelessWidget {
                         builder: (context, provider, child) => TextField(
                           controller: controller,
                           cursorColor: Colors.black,
+                          style: TextStyle(
+                            fontFamily: CustomFonts.nunitoRegular,
+                            fontSize: 16,
+                            color: HexColor('#111236'),
+                          ),
                           readOnly: isColorPicker,
                           onTap: isColorPicker ? onColorBoxTap : null,
                           onSubmitted: isLocationTextBox
@@ -65,8 +71,10 @@ class CustomMarkerTextBox extends StatelessWidget {
                                             color: provider.currentColor),
                                         width: 5,
                                         height: 5,
-                                        margin:
-                                            EdgeInsets.only(top: 6, bottom: 6),
+                                        margin: EdgeInsets.only(
+                                          top: 6,
+                                          bottom: 6,
+                                        ),
                                       )
                                     : null,
                           ),

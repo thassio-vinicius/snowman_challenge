@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:provider/provider.dart';
+import 'package:snowmanchallenge/features/add_marker/components/custom_button.dart';
 import 'package:snowmanchallenge/providers/pincolor_provider.dart';
-import 'package:snowmanchallenge/utils/custom_fonts.dart';
-import 'package:snowmanchallenge/utils/hexcolor.dart';
 
 class CustomColorPicker extends StatefulWidget {
   @override
@@ -29,31 +28,10 @@ class _CustomColorPickerState extends State<CustomColorPicker> {
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(8))),
       actions: <Widget>[
-        InkWell(
+        CustomButton(
           onTap: () => Navigator.pop(context),
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.35,
-            height: MediaQuery.of(context).size.height * 0.08,
-            decoration: BoxDecoration(
-              color: HexColor('#FFBE00'),
-              borderRadius: BorderRadius.all(
-                Radius.circular(6),
-              ),
-            ),
-            child: Center(
-              child: Padding(
-                padding: EdgeInsets.all(8),
-                child: Text(
-                  'Confirm color',
-                  style: TextStyle(
-                    fontFamily: CustomFonts.nunitoExtraBold,
-                    color: HexColor('#10159A'),
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-            ),
-          ),
+          label: 'Confirm color',
+          percentageWidth: 0.35,
         ),
       ],
       content: SingleChildScrollView(

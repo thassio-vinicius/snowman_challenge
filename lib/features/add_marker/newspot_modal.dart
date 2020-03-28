@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:snowmanchallenge/features/add_marker/components/addmarker_button.dart';
 import 'package:snowmanchallenge/features/add_marker/components/custom_backbutton.dart';
+import 'package:snowmanchallenge/features/add_marker/components/custom_button.dart';
+import 'package:snowmanchallenge/features/add_marker/components/custom_camera.dart';
 import 'package:snowmanchallenge/features/add_marker/components/custom_colorpicker.dart';
 import 'package:snowmanchallenge/features/add_marker/components/custom_marker_textbox.dart';
 import 'package:snowmanchallenge/marker_modal.dart';
 import 'package:snowmanchallenge/models/tourist_spot.dart';
+import 'package:snowmanchallenge/providers/firestore_provider.dart';
+import 'package:snowmanchallenge/providers/imagepicker_provider.dart';
 import 'package:snowmanchallenge/providers/markers_provider.dart';
 import 'package:snowmanchallenge/providers/pincolor_provider.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
@@ -27,6 +30,7 @@ class _NewSpotModalState extends State<NewSpotModal> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _locationController = TextEditingController();
   TextEditingController _pinController;
+  //Firestore _db = Firestore.instance;
 
   @override
   void didChangeDependencies() {
@@ -69,13 +73,25 @@ class _NewSpotModalState extends State<NewSpotModal> {
                   ),
                   width: MediaQuery.of(context).size.width * 0.90,
                   height: MediaQuery.of(context).size.height * 0.20,
-                  child: Center(
-                      child: IconButton(
+                  child: Consumer<ImagePickerProvider>(
+                      builder: (context, provider, child) {
+                    if (provider.image == null) {
+                      return Center(
+                        child: IconButton(
                           icon: Icon(
                             Icons.camera_alt,
                             color: HexColor('#10159A'),
                           ),
-                          onPressed: () {})),
+                          onPressed: () async => await showDialog(
+                            context: context,
+                            builder: (context) => CustomCamera(),
+                          ),
+                        ),
+                      );
+                    } else {
+                      return Image(image: FileImage(provider.image));
+                    }
+                  }),
                 ),
                 content: Container(
                   decoration: BoxDecoration(
@@ -106,7 +122,11 @@ class _NewSpotModalState extends State<NewSpotModal> {
                         onColorBoxTap: () => _colorPicker(),
                         isColorPicker: true,
                       ),
-                      NewMarkerButton(onTap: () => _addMarker())
+                      CustomButton(
+                        onTap: () => _addMarker(),
+                        percentageWidth: 0.70,
+                        label: 'Add Spot',
+                      )
                     ],
                   ),
                 ),
@@ -150,15 +170,17 @@ class _NewSpotModalState extends State<NewSpotModal> {
     LatLng latLng = LatLng(
         position.first.position.latitude, position.first.position.longitude);
 
+    //Marker marker;
+
     TouristSpot newSpot = TouristSpot(
       title: _nameController.text,
       location: _locationController.text,
+      //associatedMarker: Marker(),
       rating: 0,
       isFavorite: false,
-      mainPicture: '',
+      //mainPicture: Provider.of<ImagePickerProvider>(context, listen: false).image.path,
       category: _categoriesController.text,
-      pinColor:
-          Provider.of<PinColorProvider>(context, listen: false).currentColor,
+      //pinColor: Provider.of<PinColorProvider>(context, listen: false).currentColor,
     );
 
     Marker marker = Marker(
@@ -174,6 +196,9 @@ class _NewSpotModalState extends State<NewSpotModal> {
         builder: (context) => MarkerModal(touristSpot: newSpot),
       ),
     );
+
+    //Provider.of<FireStoreProvider>(context, listen: false).addSpot(newSpot.copyWith(associatedMarker: marker).toJson());
+    Provider.of<FireStoreProvider>(context, listen: false).addMarker(marker);
 
     Provider.of<MarkersProvider>(context, listen: false).addNewMarker(marker);
 
