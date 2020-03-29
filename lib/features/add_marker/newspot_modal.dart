@@ -12,7 +12,6 @@ import 'package:snowmanchallenge/marker_modal.dart';
 import 'package:snowmanchallenge/models/tourist_spot.dart';
 import 'package:snowmanchallenge/providers/firestore_provider.dart';
 import 'package:snowmanchallenge/providers/imagepicker_provider.dart';
-import 'package:snowmanchallenge/providers/markers_provider.dart';
 import 'package:snowmanchallenge/providers/pincolor_provider.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
@@ -170,21 +169,28 @@ class _NewSpotModalState extends State<NewSpotModal> {
     LatLng latLng = LatLng(
         position.first.position.latitude, position.first.position.longitude);
 
-    //Marker marker;
+    String markerId =
+        (position.first.position.latitude + position.first.position.longitude)
+            .toString();
 
     TouristSpot newSpot = TouristSpot(
       title: _nameController.text,
       location: _locationController.text,
-      //associatedMarker: Marker(),
+      associatedMarkerId: markerId,
       rating: 0,
       isFavorite: false,
       //mainPicture: Provider.of<ImagePickerProvider>(context, listen: false).image.path,
       category: _categoriesController.text,
-      //pinColor: Provider.of<PinColorProvider>(context, listen: false).currentColor,
+      pinColor: Provider.of<PinColorProvider>(context, listen: false)
+          .currentColor
+          .toString()
+          .toUpperCase()
+          .substring(9)
+          .replaceAll(')', ''),
     );
 
     Marker marker = Marker(
-      markerId: MarkerId(position.toString()),
+      markerId: MarkerId(markerId),
       position: latLng,
       consumeTapEvents: true,
       icon: BitmapDescriptor.defaultMarkerWithHue(HSVColor.fromColor(
@@ -197,10 +203,11 @@ class _NewSpotModalState extends State<NewSpotModal> {
       ),
     );
 
-    //Provider.of<FireStoreProvider>(context, listen: false).addSpot(newSpot.copyWith(associatedMarker: marker).toJson());
+    Provider.of<FireStoreProvider>(context, listen: false)
+        .addSpot(newSpot.toJson());
     Provider.of<FireStoreProvider>(context, listen: false).addMarker(marker);
 
-    Provider.of<MarkersProvider>(context, listen: false).addNewMarker(marker);
+    //Provider.of<MarkersProvider>(context, listen: false).addNewMarker(marker);
 
     Navigator.pop(context);
   }

@@ -4,9 +4,28 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class FireStoreProvider extends ChangeNotifier {
   Firestore _database = Firestore.instance;
-  Map<String, dynamic> _markers = <String, dynamic>{};
+  /*
+  Future<List<Map<String, dynamic>>> _markers =
+      Firestore.instance.collection('markers').getDocuments().then((docs) {
+    var map = docs.documents;
+    List<Map<String, dynamic>> retrievedMap;
+    if (map.isNotEmpty) {
+      print('map docs: ' + map.toString());
+      for (int i = 0; i < docs.documents.length; i++) {
+        retrievedMap.add(map[i].data);
+        print('map for:' + map[i].data.toString());
+        print('retrieved map:' + retrievedMap.toString());
+      }
+    } else {
+      print('map is empty?');
+    }
+    return retrievedMap;
+  });
 
-  Map<String, dynamic> get markers => _markers;
+   */
+
+  //Future<List<Map<String, dynamic>>> get markers async => await _markers;
+
   Firestore get database => _database;
 
   void addSpot(Map<String, dynamic> spot) {
@@ -21,9 +40,27 @@ class FireStoreProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addMarker(Marker marker) {
-    _markers[marker.markerId.value] = marker;
-    _database.collection('markers').add(markers);
+  void addMarker(Marker marker) async {
+    //markers[marker.markerId.value] = marker;
+
+    //var markers = await _markers;
+
+    /*
+    markers.add({
+      'markerId': marker.markerId.value,
+      //'icon': jsonEncode(marker.icon),
+      //'onTap': jsonEncode(marker.onTap),
+      'position': [marker.position.latitude, marker.position.longitude],
+    });
+
+     */
+
+    _database.collection('markers').add({
+      'markerId': marker.markerId.value,
+      //'icon': jsonEncode(marker.icon),
+      //'onTap': jsonEncode(marker.onTap),
+      'position': [marker.position.latitude, marker.position.longitude],
+    });
 
     notifyListeners();
   }

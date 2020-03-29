@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:snowmanchallenge/models/comment.dart';
 
 class TouristSpot {
   const TouristSpot({
     @required this.title,
     @required this.location,
-    this.associatedMarker,
+    this.associatedMarkerId,
     this.description,
     this.comments,
     this.category,
@@ -22,8 +21,8 @@ class TouristSpot {
   final String category;
   final String description;
   final List<Comment> comments;
-  final Marker associatedMarker;
-  final Color pinColor;
+  final String associatedMarkerId;
+  final String pinColor;
   final double rating;
   final bool isFavorite;
 
@@ -33,7 +32,7 @@ class TouristSpot {
     String mainPicture,
     String category,
     String description,
-    Marker associatedMarker,
+    String associatedMarkerId,
     List<Comment> comments,
     Color pinColor,
     double rating,
@@ -45,7 +44,7 @@ class TouristSpot {
       mainPicture: mainPicture ?? this.mainPicture,
       description: description ?? this.description,
       comments: comments ?? this.comments,
-      associatedMarker: associatedMarker ?? this.associatedMarker,
+      associatedMarkerId: associatedMarkerId ?? this.associatedMarkerId,
       category: category ?? this.category,
       pinColor: pinColor ?? this.pinColor,
       rating: rating ?? this.rating,
@@ -64,7 +63,7 @@ class TouristSpot {
     return TouristSpot(
       title: json['title'],
       location: json['location'],
-      associatedMarker: json['associatedMarker'],
+      associatedMarkerId: json['associatedMarkerId'],
       comments: commentList,
       category: json['category'],
       pinColor: json['pinColor'],
@@ -78,7 +77,7 @@ class TouristSpot {
         'title': this.title,
         'location': this.location,
         'category': this.category,
-        'associatedMarker': this.associatedMarker,
+        'associatedMarkerId': this.associatedMarkerId,
         'comments': this.comments,
         'description': this.description,
         'pinColor': this.pinColor,
