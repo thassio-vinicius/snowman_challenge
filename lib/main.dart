@@ -5,9 +5,11 @@ import 'package:snowmanchallenge/providers/firestore_provider.dart';
 import 'package:snowmanchallenge/providers/imagepicker_provider.dart';
 import 'package:snowmanchallenge/providers/markers_provider.dart';
 import 'package:snowmanchallenge/providers/pincolor_provider.dart';
-import 'package:snowmanchallenge/tabs/account_tab.dart';
-import 'package:snowmanchallenge/tabs/favorites_tab.dart';
-import 'package:snowmanchallenge/tabs/map_tab.dart';
+import 'package:snowmanchallenge/providers/user_provider.dart';
+import 'package:snowmanchallenge/screens/favorites.dart';
+import 'package:snowmanchallenge/screens/login.dart';
+import 'package:snowmanchallenge/screens/map.dart';
+import 'package:snowmanchallenge/screens/user_account.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
 void main() {
@@ -16,10 +18,11 @@ void main() {
       ChangeNotifierProvider(create: (_) => MarkersProvider()),
       ChangeNotifierProvider(create: (_) => PinColorProvider()),
       ChangeNotifierProvider(create: (_) => ImagePickerProvider()),
-      ChangeNotifierProvider(create: (_) => FireStoreProvider()),
+      ChangeNotifierProvider(create: (_) => FirestoreProvider()),
+      ChangeNotifierProvider(create: (_) => UserProvider()),
     ],
     child: MaterialApp(
-      home: Home(),
+      home: LoginScreen(),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(applyElevationOverlayColor: true),
     ),

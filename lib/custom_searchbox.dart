@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:snowmanchallenge/utils/custom_fonts.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
 class CustomSearchBox extends StatefulWidget {
@@ -14,10 +14,13 @@ class CustomSearchBox extends StatefulWidget {
 class _CustomSearchBoxState extends State<CustomSearchBox> {
   TextEditingController _searchController =
       TextEditingController(text: 'Search here');
-  TextStyle _style = TextStyle(
+  TextStyle _style = GoogleFonts.nunito(
+    textStyle: TextStyle(
       color: HexColor('#6C6C6C').withOpacity(0.50),
       fontSize: 16,
-      fontFamily: CustomFonts.nunitoBold);
+      fontWeight: FontWeight.bold,
+    ),
+  );
   int _counter = 0;
 
   @override
@@ -87,10 +90,13 @@ class _CustomSearchBoxState extends State<CustomSearchBox> {
   _onTap() {
     setState(() {
       if (_counter == 0) _searchController.text = '';
-      _style = TextStyle(
+      _style = GoogleFonts.nunito(
+        textStyle: TextStyle(
           color: Colors.black,
           fontSize: 16,
-          fontFamily: CustomFonts.nunitoBold);
+          fontWeight: FontWeight.bold,
+        ),
+      );
       _counter = 1;
     });
   }

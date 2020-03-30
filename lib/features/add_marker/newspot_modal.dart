@@ -203,9 +203,9 @@ class _NewSpotModalState extends State<NewSpotModal> {
       ),
     );
 
-    Provider.of<FireStoreProvider>(context, listen: false)
+    Provider.of<FirestoreProvider>(context, listen: false)
         .addSpot(newSpot.toJson());
-    Provider.of<FireStoreProvider>(context, listen: false).addMarker(marker);
+    Provider.of<FirestoreProvider>(context, listen: false).addMarker(marker);
 
     //Provider.of<MarkersProvider>(context, listen: false).addNewMarker(marker);
 

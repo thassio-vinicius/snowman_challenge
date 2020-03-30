@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:snowmanchallenge/models/tourist_spot.dart';
 import 'package:snowmanchallenge/star_rating.dart';
-import 'package:snowmanchallenge/utils/custom_fonts.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
 class MarkerModal extends StatefulWidget {
@@ -51,22 +51,24 @@ class _MarkerModalState extends State<MarkerModal> {
               flex: 9,
               child: Column(
                 children: <Widget>[
-                  Text(
-                    widget.touristSpot.title,
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: HexColor('#111236'),
-                      fontFamily: CustomFonts.nunitoBold,
-                    ),
-                  ),
+                  Text(widget.touristSpot.title,
+                      style: GoogleFonts.nunito(
+                        textStyle: TextStyle(
+                          fontSize: 18,
+                          color: HexColor('#111236'),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )),
                   Text(
                     widget.touristSpot.location,
-                    style: TextStyle(
-                      fontFamily: CustomFonts.nunitoSemiBold,
-                      color: HexColor('#757685').withOpacity(0.60),
-                      fontSize: 12,
+                    style: GoogleFonts.nunito(
+                      textStyle: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: HexColor('#757685').withOpacity(0.60),
+                        fontSize: 12,
+                      ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),

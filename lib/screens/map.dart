@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -24,7 +25,7 @@ class _MapTabState extends State<MapTab> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   _populateSpots(Map<String, dynamic> markers) async {
-    await Provider.of<FireStoreProvider>(context, listen: false)
+    await Provider.of<FirestoreProvider>(context, listen: false)
         .database
         .collection('spots')
         .getDocuments()
@@ -68,33 +69,34 @@ class _MapTabState extends State<MapTab> {
         child: Stack(
           children: <Widget>[
             StreamBuilder<QuerySnapshot>(
-              stream: Provider.of<FireStoreProvider>(context, listen: false)
+              stream: Provider.of<FirestoreProvider>(context, listen: false)
                   .database
                   .collection('markers')
                   .snapshots(),
               builder: (context, snapshot) {
-                if (!snapshot.hasData)
-                  return Center(child: CustomProgressIndicator());
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                    return Center(child: CustomProgressIndicator());
+                    break;
+                  default:
+                    for (int i = 0; i < snapshot.data.documents.length; i++)
+                      _populateSpots(snapshot.data.documents[i].data);
 
-                for (int i = 0; i < snapshot.data.documents.length; i++) {
-                  _populateSpots(snapshot.data.documents[i].data);
-                  print('data: ' + snapshot.data.documents[i].data.toString());
-                  print('id: ' + snapshot.data.documents[i].documentID);
+                    return Consumer<MarkersProvider>(
+                      builder: (context, provider, child) => GoogleMap(
+                          mapType: MapType.normal,
+                          initialCameraPosition: CameraPosition(
+                            target: LatLng(-10.686929, -37.422591),
+                            zoom: 18,
+                          ),
+                          onMapCreated: (GoogleMapController controller) {
+                            _mapController.complete(controller);
+                          },
+                          markers: provider.markers,
+                          onLongPress: (position) => _placeMarker(position)),
+                    );
+                    break;
                 }
-
-                return Consumer<MarkersProvider>(
-                  builder: (context, provider, child) => GoogleMap(
-                      mapType: MapType.normal,
-                      initialCameraPosition: CameraPosition(
-                        target: LatLng(-10.686929, -37.422591),
-                        zoom: 18,
-                      ),
-                      onMapCreated: (GoogleMapController controller) {
-                        _mapController.complete(controller);
-                      },
-                      markers: provider.markers,
-                      onLongPress: (position) => _placeMarker(position)),
-                );
               },
             ),
             Positioned(

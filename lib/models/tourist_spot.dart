@@ -1,7 +1,8 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:snowmanchallenge/models/comment.dart';
 
-class TouristSpot {
+class TouristSpot extends Equatable {
   const TouristSpot({
     @required this.title,
     @required this.location,
@@ -85,4 +86,18 @@ class TouristSpot {
         'mainPicture': this.mainPicture,
         'isFavorite': this.isFavorite,
       };
+
+  @override
+  List<Object> get props => [
+        title,
+        location,
+        mainPicture,
+        category,
+        description,
+        comments,
+        associatedMarkerId,
+        pinColor,
+        rating,
+        isFavorite,
+      ];
 }

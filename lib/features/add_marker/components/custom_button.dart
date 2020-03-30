@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:snowmanchallenge/utils/custom_fonts.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
 class CustomButton extends StatelessWidget {
@@ -33,10 +33,12 @@ class CustomButton extends StatelessWidget {
             padding: EdgeInsets.all(8),
             child: Text(
               label,
-              style: TextStyle(
-                fontFamily: CustomFonts.nunitoExtraBold,
-                color: HexColor('#10159A'),
-                fontSize: 16,
+              style: GoogleFonts.nunito(
+                textStyle: TextStyle(
+                  color: HexColor('#10159A'),
+                  fontWeight: FontWeight.w800,
+                  fontSize: 16,
+                ),
               ),
             ),
           ),

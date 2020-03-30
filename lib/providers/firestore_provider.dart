@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class FireStoreProvider extends ChangeNotifier {
+class FirestoreProvider extends ChangeNotifier {
   Firestore _database = Firestore.instance;
   /*
   Future<List<Map<String, dynamic>>> _markers =
@@ -30,6 +30,12 @@ class FireStoreProvider extends ChangeNotifier {
 
   void addSpot(Map<String, dynamic> spot) {
     _database.collection('spots').add(spot);
+
+    notifyListeners();
+  }
+
+  void addUser(Map<String, dynamic> user) {
+    _database.collection('users').add(user);
 
     notifyListeners();
   }

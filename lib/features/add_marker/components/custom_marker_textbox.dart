@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:snowmanchallenge/providers/pincolor_provider.dart';
-import 'package:snowmanchallenge/utils/custom_fonts.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
-class CustomMarkerTextBox extends StatelessWidget {
+class CustomMarkerTextBox extends StatefulWidget {
   const CustomMarkerTextBox({
     @required this.label,
     @required this.controller,
@@ -21,6 +21,18 @@ class CustomMarkerTextBox extends StatelessWidget {
   final TextEditingController controller;
   final bool isLocationTextBox;
   final bool isColorPicker;
+
+  @override
+  _CustomMarkerTextBoxState createState() => _CustomMarkerTextBoxState();
+}
+
+class _CustomMarkerTextBoxState extends State<CustomMarkerTextBox> {
+
+  @override
+  void dispose() {
+    widget.controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,26 +57,28 @@ class CustomMarkerTextBox extends StatelessWidget {
                               width: 1.0)),
                       child: Consumer<PinColorProvider>(
                         builder: (context, provider, child) => TextField(
-                          controller: controller,
+                          controller: widget.controller,
                           cursorColor: Colors.black,
-                          style: TextStyle(
-                            fontFamily: CustomFonts.nunitoRegular,
-                            fontSize: 16,
-                            color: HexColor('#111236'),
+                          style: GoogleFonts.nunito(
+                            textStyle: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 16,
+                              color: HexColor('#111236'),
+                            ),
                           ),
-                          readOnly: isColorPicker,
-                          onTap: isColorPicker ? onColorBoxTap : null,
-                          onSubmitted: isLocationTextBox
-                              ? (location) => onLocationBoxSubmitted
+                          readOnly: widget.isColorPicker,
+                          onTap: widget.isColorPicker ? widget.onColorBoxTap : null,
+                          onSubmitted: widget.isLocationTextBox
+                              ? (location) => widget.onLocationBoxSubmitted
                               : null,
                           decoration: InputDecoration(
                             border: InputBorder.none,
-                            suffixIcon: isLocationTextBox
+                            suffixIcon: widget.isLocationTextBox
                                 ? Icon(
                                     CupertinoIcons.location_solid,
                                     color: HexColor('#10159A'),
                                   )
-                                : isColorPicker
+                                : widget.isColorPicker
                                     ? Container(
                                         decoration: BoxDecoration(
                                             shape: BoxShape.circle,
@@ -93,7 +107,7 @@ class CustomMarkerTextBox extends StatelessWidget {
           child: Container(
             padding: EdgeInsets.only(left: 4, right: 4),
             child: Text(
-              label,
+              widget.label,
               style: TextStyle(
                   fontSize: 12.0, color: HexColor('#757685').withOpacity(0.60)),
             ),

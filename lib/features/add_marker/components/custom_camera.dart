@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:snowmanchallenge/features/add_marker/components/custom_button.dart';
 import 'package:snowmanchallenge/providers/imagepicker_provider.dart';
-import 'package:snowmanchallenge/utils/custom_fonts.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
 class CustomCamera extends StatefulWidget {
@@ -28,10 +28,12 @@ class _CustomCameraState extends State<CustomCamera> {
     return AlertDialog(
       title: Text(
         'Select your image source',
-        style: TextStyle(
-          fontFamily: CustomFonts.nunitoBold,
-          fontSize: 20,
-          color: HexColor('#111236'),
+        style: GoogleFonts.nunito(
+          textStyle: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+            color: HexColor('#111236'),
+          ),
         ),
       ),
       actions: <Widget>[
