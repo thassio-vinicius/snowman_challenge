@@ -9,4 +9,8 @@ class UserProvider extends ChangeNotifier {
   saveUserInfo(FirebaseUser user) {
     _user = user;
   }
+
+  loadUserInfo() {
+    _user.reload();
+  }
 }

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 class AccountTab extends StatefulWidget {
+  const AccountTab({this.anonymous = false});
+
+  final bool anonymous;
+
   @override
   _AccountTabState createState() => _AccountTabState();
 }

@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:snowmanchallenge/custom_progress_indicator.dart';
@@ -16,16 +15,19 @@ import 'package:snowmanchallenge/providers/markers_provider.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
 class MapTab extends StatefulWidget {
+  const MapTab({this.anonymous = false});
+
+  final bool anonymous;
+
   @override
   _MapTabState createState() => _MapTabState();
 }
 
 class _MapTabState extends State<MapTab> {
-  final Completer<GoogleMapController> _mapController = Completer();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   _populateSpots(Map<String, dynamic> markers) async {
-    await Provider.of<FirestoreProvider>(context, listen: false)
+    await Provider.of<FireStoreProvider>(context, listen: false)
         .database
         .collection('spots')
         .getDocuments()
@@ -63,13 +65,14 @@ class _MapTabState extends State<MapTab> {
 
   @override
   Widget build(BuildContext context) {
+    final Completer<GoogleMapController> _mapController = Completer();
     return Scaffold(
       key: _scaffoldKey,
       body: SafeArea(
         child: Stack(
           children: <Widget>[
             StreamBuilder<QuerySnapshot>(
-              stream: Provider.of<FirestoreProvider>(context, listen: false)
+              stream: Provider.of<FireStoreProvider>(context, listen: false)
                   .database
                   .collection('markers')
                   .snapshots(),
@@ -84,16 +87,17 @@ class _MapTabState extends State<MapTab> {
 
                     return Consumer<MarkersProvider>(
                       builder: (context, provider, child) => GoogleMap(
-                          mapType: MapType.normal,
-                          initialCameraPosition: CameraPosition(
-                            target: LatLng(-10.686929, -37.422591),
-                            zoom: 18,
-                          ),
-                          onMapCreated: (GoogleMapController controller) {
-                            _mapController.complete(controller);
-                          },
-                          markers: provider.markers,
-                          onLongPress: (position) => _placeMarker(position)),
+                        mapType: MapType.normal,
+                        mapToolbarEnabled: false,
+                        initialCameraPosition: CameraPosition(
+                          target: LatLng(-10.686929, -37.422591),
+                          zoom: 18,
+                        ),
+                        onMapCreated: (GoogleMapController controller) {
+                          _mapController.complete(controller);
+                        },
+                        markers: provider.markers,
+                      ),
                     );
                     break;
                 }
@@ -104,6 +108,7 @@ class _MapTabState extends State<MapTab> {
               left: 0,
               right: 0,
               child: CustomSearchBox(
+                readOnly: widget.anonymous,
                 dialogPressed: NewSpotModal(modalContext: context),
               ),
             ),
@@ -111,34 +116,5 @@ class _MapTabState extends State<MapTab> {
         ),
       ),
     );
-  }
-
-  _placeMarker(LatLng position) async {
-    var location = await Geolocator().placemarkFromCoordinates(
-        position.latitude, position.longitude,
-        localeIdentifier: 'pt_BR');
-
-    Marker marker;
-
-    TouristSpot _spot = TouristSpot(
-      title: location.first.subLocality,
-      //associatedMarker: marker,
-      location: location.first.thoroughfare + location.first.subThoroughfare,
-      rating: 1,
-      isFavorite: false,
-    );
-
-    marker = Marker(
-      markerId: MarkerId(position.toString()),
-      position: position,
-      icon: BitmapDescriptor.defaultMarker,
-      consumeTapEvents: true,
-      onTap: () => showModalBottomSheet(
-        context: context,
-        builder: (context) => MarkerModal(touristSpot: _spot),
-      ),
-    );
-
-    Provider.of<MarkersProvider>(context, listen: false).addNewMarker(marker);
   }
 }

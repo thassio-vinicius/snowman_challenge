@@ -3,9 +3,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
 class CustomSearchBox extends StatefulWidget {
-  const CustomSearchBox({@required this.dialogPressed});
+  const CustomSearchBox(
+      {@required this.dialogPressed, @required this.readOnly});
 
   final Widget dialogPressed;
+  final bool readOnly;
 
   @override
   _CustomSearchBoxState createState() => _CustomSearchBoxState();
@@ -57,7 +59,8 @@ class _CustomSearchBoxState extends State<CustomSearchBox> {
               alignment: Alignment.center,
               child: TextField(
                 scrollPadding: EdgeInsets.zero,
-                onTap: () => _onTap(),
+                readOnly: widget.readOnly,
+                onTap: () => widget.readOnly ? () {} : _onTap(),
                 decoration: InputDecoration(
                   border: UnderlineInputBorder(
                     borderSide: BorderSide.none,
@@ -78,8 +81,11 @@ class _CustomSearchBoxState extends State<CustomSearchBox> {
             flex: 1,
             child: IconButton(
               icon: Icon(Icons.add, color: HexColor('#757685'), size: 25),
-              onPressed: () => showDialog(
-                  context: context, builder: (context) => widget.dialogPressed),
+              onPressed: () => widget.readOnly
+                  ? () {}
+                  : showDialog(
+                      context: context,
+                      builder: (context) => widget.dialogPressed),
             ),
           )
         ],

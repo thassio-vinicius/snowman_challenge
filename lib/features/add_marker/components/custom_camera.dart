@@ -27,7 +27,7 @@ class _CustomCameraState extends State<CustomCamera> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(
-        'Select your image source',
+        "Where's your image coming from?",
         style: GoogleFonts.nunito(
           textStyle: TextStyle(
             fontWeight: FontWeight.bold,
@@ -38,28 +38,32 @@ class _CustomCameraState extends State<CustomCamera> {
       ),
       actions: <Widget>[
         CustomButton(
-            onTap: () async {
-              Provider.of<ImagePickerProvider>(context, listen: false)
-                  .setImageSource(ImageSource.camera);
-
-              await _setCurrentImage();
-
-              Navigator.pop(context);
-            },
+            onTap: () => _onCameraTap(),
             label: 'Camera',
             percentageWidth: 0.20),
         CustomButton(
-            onTap: () async {
-              Provider.of<ImagePickerProvider>(context, listen: false)
-                  .setImageSource(ImageSource.gallery);
-
-              await _setCurrentImage();
-
-              Navigator.pop(context);
-            },
+            onTap: () => _onGalleryTap(),
             label: 'Gallery',
             percentageWidth: 0.20),
       ],
     );
+  }
+
+  _onCameraTap() async {
+    Provider.of<ImagePickerProvider>(context, listen: false)
+        .setImageSource(ImageSource.camera);
+
+    await _setCurrentImage();
+
+    Navigator.pop(context);
+  }
+
+  _onGalleryTap() async {
+    Provider.of<ImagePickerProvider>(context, listen: false)
+        .setImageSource(ImageSource.gallery);
+
+    await _setCurrentImage();
+
+    Navigator.pop(context);
   }
 }
