@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:snowmanchallenge/models/tourist_spot.dart';
+import 'package:snowmanchallenge/providers/imagepicker_provider.dart';
 import 'package:snowmanchallenge/star_rating.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
@@ -36,8 +38,11 @@ class _MarkerModalState extends State<MarkerModal> {
   }
 
   _buildHeader() {
-    return Placeholder(
-      color: Colors.grey,
+    return Consumer<ImagePickerProvider>(
+      builder: (context, provider, child) => Image.network(
+        provider.imageUrl,
+        fit: BoxFit.fill,
+      ),
     );
   }
 

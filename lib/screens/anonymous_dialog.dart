@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:snowmanchallenge/screens/home.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
 class AnonymousDialog extends StatelessWidget {
@@ -25,7 +24,7 @@ class AnonymousDialog extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           GestureDetector(
-            onTap: () => _awareButton(context),
+            onTap: () => Navigator.pushReplacementNamed(context, '/home'),
             child: Text(
               "Got it!",
               style: GoogleFonts.nunito(
@@ -49,20 +48,6 @@ class AnonymousDialog extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  _awareButton(context) async {
-    //await Provider.of<AuthenticationProvider>(context, listen: false).anonymousSignIn();
-
-    Navigator.pushReplacement(
-      context,
-      PageRouteBuilder(
-        pageBuilder: (context, animation1, animation2) => Home(),
-        transitionsBuilder: (context, animation1, animation2, child) =>
-            FadeTransition(opacity: animation1, child: child),
-        transitionDuration: Duration(milliseconds: 500),
       ),
     );
   }

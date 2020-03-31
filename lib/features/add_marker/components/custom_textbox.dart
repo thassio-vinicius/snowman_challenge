@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:snowmanchallenge/providers/pincolor_provider.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
-class CustomMarkerTextBox extends StatefulWidget {
-  const CustomMarkerTextBox({
+class CustomTextBox extends StatefulWidget {
+  const CustomTextBox({
     @required this.label,
     @required this.controller,
     this.onColorBoxTap,
@@ -23,17 +23,10 @@ class CustomMarkerTextBox extends StatefulWidget {
   final bool isColorPicker;
 
   @override
-  _CustomMarkerTextBoxState createState() => _CustomMarkerTextBoxState();
+  _CustomTextBoxState createState() => _CustomTextBoxState();
 }
 
-class _CustomMarkerTextBoxState extends State<CustomMarkerTextBox> {
-
-  @override
-  void dispose() {
-    widget.controller.dispose();
-    super.dispose();
-  }
-
+class _CustomTextBoxState extends State<CustomTextBox> {
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -67,7 +60,9 @@ class _CustomMarkerTextBoxState extends State<CustomMarkerTextBox> {
                             ),
                           ),
                           readOnly: widget.isColorPicker,
-                          onTap: widget.isColorPicker ? widget.onColorBoxTap : null,
+                          onTap: widget.isColorPicker
+                              ? widget.onColorBoxTap
+                              : null,
                           onSubmitted: widget.isLocationTextBox
                               ? (location) => widget.onLocationBoxSubmitted
                               : null,

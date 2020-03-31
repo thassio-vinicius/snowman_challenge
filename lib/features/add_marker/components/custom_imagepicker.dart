@@ -8,19 +8,19 @@ import 'package:snowmanchallenge/features/add_marker/components/custom_button.da
 import 'package:snowmanchallenge/providers/imagepicker_provider.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
-class CustomCamera extends StatefulWidget {
+class CustomImagePicker extends StatefulWidget {
   @override
-  _CustomCameraState createState() => _CustomCameraState();
+  _CustomImagePickerState createState() => _CustomImagePickerState();
 }
 
-class _CustomCameraState extends State<CustomCamera> {
+class _CustomImagePickerState extends State<CustomImagePicker> {
   _setCurrentImage() async {
     ImageSource source =
         Provider.of<ImagePickerProvider>(context, listen: false).imageSource;
 
     File image = await ImagePicker.pickImage(source: source);
 
-    Provider.of<ImagePickerProvider>(context, listen: false).setImage(image);
+    Provider.of<ImagePickerProvider>(context, listen: false).image = image;
   }
 
   @override
@@ -38,29 +38,20 @@ class _CustomCameraState extends State<CustomCamera> {
       ),
       actions: <Widget>[
         CustomButton(
-            onTap: () => _onCameraTap(),
+            onTap: () => _onTap(ImageSource.camera),
             label: 'Camera',
             percentageWidth: 0.20),
         CustomButton(
-            onTap: () => _onGalleryTap(),
+            onTap: () => _onTap(ImageSource.gallery),
             label: 'Gallery',
             percentageWidth: 0.20),
       ],
     );
   }
 
-  _onCameraTap() async {
-    Provider.of<ImagePickerProvider>(context, listen: false)
-        .setImageSource(ImageSource.camera);
-
-    await _setCurrentImage();
-
-    Navigator.pop(context);
-  }
-
-  _onGalleryTap() async {
-    Provider.of<ImagePickerProvider>(context, listen: false)
-        .setImageSource(ImageSource.gallery);
+  _onTap(ImageSource source) async {
+    Provider.of<ImagePickerProvider>(context, listen: false).imageSource =
+        source;
 
     await _setCurrentImage();
 

@@ -6,8 +6,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:snowmanchallenge/providers/authentication_provider.dart';
 import 'package:snowmanchallenge/providers/user_provider.dart';
-import 'package:snowmanchallenge/screens/home.dart';
-import 'package:snowmanchallenge/screens/sign_options.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
 class LoginButton extends StatelessWidget {
@@ -63,18 +61,26 @@ class LoginButton extends StatelessWidget {
     );
   }
 
-  _signIn(context) {
-    Provider.of<AuthenticationProvider>(context, listen: false)
-        .facebookSignUp();
+  _signIn(context) async {
+    AuthResult user =
+        await Provider.of<AuthenticationProvider>(context, listen: false)
+            .facebookSignIn();
 
+    Provider.of<UserProvider>(context, listen: false).saveUserInfo(user.user);
+
+    Navigator.pushReplacementNamed(context, '/home');
+    /*
     Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
+      context,
+      PageRouteBuilder(
         pageBuilder: (context, animation1, animation2) => Home(),
-    transitionsBuilder: (context, animation1, animation2, child) =>
-    FadeTransition(opacity: animation1, child: child),
-    transitionDuration: Duration(milliseconds: 500),
-    ),);
+        transitionsBuilder: (context, animation1, animation2, child) =>
+            FadeTransition(opacity: animation1, child: child),
+        transitionDuration: Duration(milliseconds: 500),
+      ),
+    );
+
+     */
   }
 
   _signUp(context) async {
@@ -89,16 +95,7 @@ class LoginButton extends StatelessWidget {
 
       Provider.of<UserProvider>(context, listen: false).saveUserInfo(auth.user);
 
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation1, animation2) =>
-              SignOptions(isSignUpOption: true),
-          transitionsBuilder: (context, animation1, animation2, child) =>
-              FadeTransition(opacity: animation1, child: child),
-          transitionDuration: Duration(milliseconds: 500),
-        ),
-      );
+      Navigator.pushReplacementNamed(context, '/signOptionsTrue');
     }
   }
 }

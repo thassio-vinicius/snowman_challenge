@@ -6,9 +6,14 @@ import 'package:snowmanchallenge/providers/imagepicker_provider.dart';
 import 'package:snowmanchallenge/providers/markers_provider.dart';
 import 'package:snowmanchallenge/providers/pincolor_provider.dart';
 import 'package:snowmanchallenge/providers/user_provider.dart';
+import 'package:snowmanchallenge/screens/home.dart';
 import 'package:snowmanchallenge/screens/sign_options.dart';
 
 void main() {
+  final signOptionsFalse = SignOptions(isSignUpOption: false);
+  final signOptionsTrue = SignOptions(isSignUpOption: true);
+  final home = Home();
+
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => MarkersProvider()),
@@ -22,6 +27,12 @@ void main() {
               AuthenticationProvider(firestoreProvider: fireStore)),
     ],
     child: MaterialApp(
+      initialRoute: '/signOptionsFalse',
+      routes: {
+        '/signOptionsFalse': (context) => signOptionsFalse,
+        '/signOptionsTrue': (context) => signOptionsTrue,
+        '/home': (context) => home,
+      },
       home: SignOptions(isSignUpOption: false),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

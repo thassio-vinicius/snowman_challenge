@@ -24,8 +24,6 @@ class MapTab extends StatefulWidget {
 }
 
 class _MapTabState extends State<MapTab> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
   _populateSpots(Map<String, dynamic> markers) async {
     await Provider.of<FireStoreProvider>(context, listen: false)
         .database
@@ -67,7 +65,6 @@ class _MapTabState extends State<MapTab> {
   Widget build(BuildContext context) {
     final Completer<GoogleMapController> _mapController = Completer();
     return Scaffold(
-      key: _scaffoldKey,
       body: SafeArea(
         child: Stack(
           children: <Widget>[

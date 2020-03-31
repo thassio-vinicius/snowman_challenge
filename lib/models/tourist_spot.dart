@@ -6,6 +6,7 @@ class TouristSpot extends Equatable {
   const TouristSpot({
     @required this.title,
     @required this.location,
+    @required this.owner,
     this.associatedMarkerId,
     this.description,
     this.comments,
@@ -18,6 +19,7 @@ class TouristSpot extends Equatable {
 
   final String title;
   final String location;
+  final String owner;
   final String mainPicture;
   final String category;
   final String description;
@@ -31,6 +33,7 @@ class TouristSpot extends Equatable {
     String title,
     String location,
     String mainPicture,
+    String owner,
     String category,
     String description,
     String associatedMarkerId,
@@ -42,6 +45,7 @@ class TouristSpot extends Equatable {
     return TouristSpot(
       title: title ?? this.title,
       location: location ?? this.location,
+      owner: owner ?? this.owner,
       mainPicture: mainPicture ?? this.mainPicture,
       description: description ?? this.description,
       comments: comments ?? this.comments,
@@ -64,6 +68,8 @@ class TouristSpot extends Equatable {
     return TouristSpot(
       title: json['title'],
       location: json['location'],
+      owner: json['owner'],
+      description: json['description'],
       associatedMarkerId: json['associatedMarkerId'],
       comments: commentList,
       category: json['category'],
@@ -78,6 +84,7 @@ class TouristSpot extends Equatable {
         'title': this.title,
         'location': this.location,
         'category': this.category,
+        'owner': this.owner,
         'associatedMarkerId': this.associatedMarkerId,
         'comments': this.comments,
         'description': this.description,
@@ -93,6 +100,7 @@ class TouristSpot extends Equatable {
         location,
         mainPicture,
         category,
+        owner,
         description,
         comments,
         associatedMarkerId,

@@ -5,14 +5,15 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:snowmanchallenge/features/add_marker/components/custom_backbutton.dart';
 import 'package:snowmanchallenge/features/add_marker/components/custom_button.dart';
-import 'package:snowmanchallenge/features/add_marker/components/custom_camera.dart';
 import 'package:snowmanchallenge/features/add_marker/components/custom_colorpicker.dart';
-import 'package:snowmanchallenge/features/add_marker/components/custom_marker_textbox.dart';
+import 'package:snowmanchallenge/features/add_marker/components/custom_imagepicker.dart';
+import 'package:snowmanchallenge/features/add_marker/components/custom_textbox.dart';
 import 'package:snowmanchallenge/marker_modal.dart';
 import 'package:snowmanchallenge/models/tourist_spot.dart';
 import 'package:snowmanchallenge/providers/firestore_provider.dart';
 import 'package:snowmanchallenge/providers/imagepicker_provider.dart';
 import 'package:snowmanchallenge/providers/pincolor_provider.dart';
+import 'package:snowmanchallenge/providers/user_provider.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
 class NewSpotModal extends StatefulWidget {
@@ -29,7 +30,6 @@ class _NewSpotModalState extends State<NewSpotModal> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _locationController = TextEditingController();
   TextEditingController _pinController;
-  //Firestore _db = Firestore.instance;
 
   @override
   void didChangeDependencies() {
@@ -74,7 +74,7 @@ class _NewSpotModalState extends State<NewSpotModal> {
                   height: MediaQuery.of(context).size.height * 0.20,
                   child: Consumer<ImagePickerProvider>(
                       builder: (context, provider, child) {
-                    if (provider.image == null) {
+                    if (provider.imageUrl == null) {
                       return Center(
                         child: IconButton(
                           icon: Icon(
@@ -83,12 +83,12 @@ class _NewSpotModalState extends State<NewSpotModal> {
                           ),
                           onPressed: () async => await showDialog(
                             context: context,
-                            builder: (context) => CustomCamera(),
+                            builder: (context) => CustomImagePicker(),
                           ),
                         ),
                       );
                     } else {
-                      return Image(image: FileImage(provider.image));
+                      return Image.network(provider.imageUrl, fit: BoxFit.fill);
                     }
                   }),
                 ),
@@ -104,18 +104,17 @@ class _NewSpotModalState extends State<NewSpotModal> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                      CustomMarkerTextBox(
-                          controller: _nameController, label: 'Name'),
-                      CustomMarkerTextBox(
+                      CustomTextBox(controller: _nameController, label: 'Name'),
+                      CustomTextBox(
                           controller: _categoriesController, label: 'Category'),
-                      CustomMarkerTextBox(
+                      CustomTextBox(
                         controller: _locationController,
                         label: 'Location',
                         isLocationTextBox: true,
                         onLocationBoxSubmitted: () =>
                             _getLatLng(_locationController.text),
                       ),
-                      CustomMarkerTextBox(
+                      CustomTextBox(
                         controller: _pinController,
                         label: 'Pin Color',
                         onColorBoxTap: () => _colorPicker(),
@@ -173,13 +172,19 @@ class _NewSpotModalState extends State<NewSpotModal> {
         (position.first.position.latitude + position.first.position.longitude)
             .toString();
 
+    String owner =
+        Provider.of<UserProvider>(context, listen: false).user.providerId;
+
     TouristSpot newSpot = TouristSpot(
       title: _nameController.text,
       location: _locationController.text,
+      owner: owner,
       associatedMarkerId: markerId,
       rating: 0,
       isFavorite: false,
-      //mainPicture: Provider.of<ImagePickerProvider>(context, listen: false).image.path,
+      mainPicture:
+          Provider.of<ImagePickerProvider>(context, listen: false).imageUrl ??
+              '',
       category: _categoriesController.text,
       pinColor: Provider.of<PinColorProvider>(context, listen: false)
           .currentColor

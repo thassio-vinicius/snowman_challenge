@@ -11,29 +11,54 @@ class AuthenticationProvider extends ChangeNotifier {
   FireStoreProvider firestoreProvider;
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
-  /*
-  anonymousSignIn() async {
-    await firebaseAuth.signInAnonymously();
+  checkNaddUser(
+      {FirebaseUser firebaseUser,
+      Map<String, dynamic> user,
+      bool checkFromSignIn = false}) async {
+    bool checkReturn = await firestoreProvider.database
+        .collection('users')
+        .getDocuments()
+        .then((docs) {
+      for (int i = 0; i < docs.documents.length; i++) {
+        if (checkFromSignIn) {
+          if (docs.documents[i].data['email'] != firebaseUser.email) {
+            firestoreProvider.addUser(user);
+            return true;
+          }
+        } else {
+          if (docs.documents[i].data['email'] != user['email']) {
+            firestoreProvider.addUser(user);
+            return true;
+          }
+        }
+      }
+      return false;
+    });
 
     notifyListeners();
+
+    return checkReturn;
   }
 
-   */
-
-  void facebookSignIn() async {
+  facebookSignIn() async {
     var result = await _facebookLogin.logIn(['email', 'public_profile']);
     var credential = FacebookAuthProvider.getCredential(
         accessToken: result.accessToken.token);
+    AuthResult auth;
 
     switch (result.status) {
       case FacebookLoginStatus.loggedIn:
-        var auth = await firebaseAuth.signInWithCredential(credential);
+        auth = await firebaseAuth.signInWithCredential(credential);
 
-        firestoreProvider.addUser(User(
+        var user = User(
           displayName: auth.user.displayName,
           email: auth.user.email,
           urlPhoto: auth.user.photoUrl,
-        ).toJson());
+          id: auth.user.uid,
+        ).toJson();
+
+        checkNaddUser(
+            firebaseUser: auth.user, user: user, checkFromSignIn: true);
         break;
       case FacebookLoginStatus.cancelledByUser:
         print("Facebook login cancelled");
@@ -44,6 +69,8 @@ class AuthenticationProvider extends ChangeNotifier {
     }
 
     notifyListeners();
+
+    return auth;
   }
 
   facebookSignUp() async {
@@ -52,7 +79,6 @@ class AuthenticationProvider extends ChangeNotifier {
     await _facebookLogin.logIn(['email', 'public_profile']).then((value) async {
       AuthCredential credential = FacebookAuthProvider.getCredential(
           accessToken: value.accessToken.token);
-
       auth = await firebaseAuth.signInWithCredential(credential);
     });
 
