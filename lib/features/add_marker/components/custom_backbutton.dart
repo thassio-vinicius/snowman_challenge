@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
 class CustomBackButton extends StatelessWidget {
+  const CustomBackButton({@required this.onTap});
+
+  final Function onTap;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -18,7 +22,7 @@ class CustomBackButton extends StatelessWidget {
             color: HexColor('#757685'),
             size: 25,
           ),
-          onPressed: () => Navigator.pop(context),
+          onPressed: onTap,
         ),
       ),
     );

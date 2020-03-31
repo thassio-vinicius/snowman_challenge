@@ -7,6 +7,7 @@ class CustomButton extends StatelessWidget {
     @required this.onTap,
     @required this.label,
     @required this.percentageWidth,
+    this.margin,
     this.percentageHeight = 0.08,
   });
 
@@ -14,6 +15,7 @@ class CustomButton extends StatelessWidget {
   final double percentageHeight;
   final double percentageWidth;
   final String label;
+  final EdgeInsetsGeometry margin;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +24,7 @@ class CustomButton extends StatelessWidget {
       child: Container(
         width: MediaQuery.of(context).size.width * percentageWidth,
         height: MediaQuery.of(context).size.height * percentageHeight,
+        margin: margin ?? EdgeInsets.zero,
         decoration: BoxDecoration(
           color: HexColor('#FFBE00'),
           borderRadius: BorderRadius.all(

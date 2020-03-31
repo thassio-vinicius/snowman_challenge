@@ -26,8 +26,11 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8))),
       title: Text(
         "Where's your image coming from?",
+        textAlign: TextAlign.center,
         style: GoogleFonts.nunito(
           textStyle: TextStyle(
             fontWeight: FontWeight.bold,
@@ -36,22 +39,30 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
           ),
         ),
       ),
-      actions: <Widget>[
-        CustomButton(
-            onTap: () => _onTap(ImageSource.camera),
-            label: 'Camera',
-            percentageWidth: 0.20),
-        CustomButton(
-            onTap: () => _onTap(ImageSource.gallery),
-            label: 'Gallery',
-            percentageWidth: 0.20),
-      ],
+      content: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          CustomButton(
+              onTap: () => _onTap(ImageSource.camera),
+              margin: EdgeInsets.symmetric(horizontal: 12),
+              label: 'Camera',
+              percentageWidth: 0.20),
+          CustomButton(
+              onTap: () => _onTap(ImageSource.gallery),
+              margin: EdgeInsets.symmetric(horizontal: 12),
+              label: 'Gallery',
+              percentageWidth: 0.20),
+        ],
+      ),
     );
   }
 
   _onTap(ImageSource source) async {
-    Provider.of<ImagePickerProvider>(context, listen: false).imageSource =
-        source;
+    var imageProvider =
+        Provider.of<ImagePickerProvider>(context, listen: false);
+
+    imageProvider.imageSource = source;
 
     await _setCurrentImage();
 

@@ -1,9 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:snowmanchallenge/models/tourist_spot.dart';
-import 'package:snowmanchallenge/providers/imagepicker_provider.dart';
 import 'package:snowmanchallenge/star_rating.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
@@ -24,7 +22,10 @@ class _MarkerModalState extends State<MarkerModal> {
       height: MediaQuery.of(context).size.height * 0.35,
       child: Column(
         children: <Widget>[
-          Flexible(flex: 5, child: _buildHeader()),
+          Container(
+              width: MediaQuery.of(context).size.width * 0.90,
+              height: MediaQuery.of(context).size.height * 0.17,
+              child: _buildHeader()),
           Flexible(
             flex: 5,
             child: Padding(
@@ -38,11 +39,12 @@ class _MarkerModalState extends State<MarkerModal> {
   }
 
   _buildHeader() {
-    return Consumer<ImagePickerProvider>(
-      builder: (context, provider, child) => Image.network(
-        provider.imageUrl,
-        fit: BoxFit.fill,
-      ),
+    return Image(
+      image: widget.touristSpot.mainPicture != null &&
+              widget.touristSpot.mainPicture != ''
+          ? NetworkImage(widget.touristSpot.mainPicture)
+          : AssetImage('assets/images/logo.png'),
+      fit: BoxFit.cover,
     );
   }
 
@@ -56,14 +58,16 @@ class _MarkerModalState extends State<MarkerModal> {
               flex: 9,
               child: Column(
                 children: <Widget>[
-                  Text(widget.touristSpot.title,
-                      style: GoogleFonts.nunito(
-                        textStyle: TextStyle(
-                          fontSize: 18,
-                          color: HexColor('#111236'),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )),
+                  Text(
+                    widget.touristSpot.title,
+                    style: GoogleFonts.nunito(
+                      textStyle: TextStyle(
+                        fontSize: 18,
+                        color: HexColor('#111236'),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                   Text(
                     widget.touristSpot.location,
                     style: GoogleFonts.nunito(

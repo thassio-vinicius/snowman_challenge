@@ -35,13 +35,21 @@ class _NewSpotModalState extends State<NewSpotModal> {
   void didChangeDependencies() {
     _pinController = TextEditingController(
         text: '#' +
-            Provider.of<PinColorProvider>(context)
+            Provider.of<PinColorProvider>(context, listen: false)
                 .currentColor
                 .toString()
                 .toUpperCase()
                 .substring(9)
                 .replaceAll(')', ''));
     super.didChangeDependencies();
+  }
+
+  _onBackTapped() {
+    var imageProvider =
+        Provider.of<ImagePickerProvider>(context, listen: false);
+    imageProvider.isImageSelected = false;
+
+    Navigator.pop(context);
   }
 
   @override
@@ -53,7 +61,7 @@ class _NewSpotModalState extends State<NewSpotModal> {
           children: <Widget>[
             Align(
               alignment: Alignment.centerLeft,
-              child: CustomBackButton(),
+              child: CustomBackButton(onTap: () => _onBackTapped()),
             ),
             Container(
               child: AlertDialog(
@@ -74,7 +82,7 @@ class _NewSpotModalState extends State<NewSpotModal> {
                   height: MediaQuery.of(context).size.height * 0.20,
                   child: Consumer<ImagePickerProvider>(
                       builder: (context, provider, child) {
-                    if (provider.imageUrl == null) {
+                    if (!provider.isImageSelected) {
                       return Center(
                         child: IconButton(
                           icon: Icon(
@@ -88,7 +96,33 @@ class _NewSpotModalState extends State<NewSpotModal> {
                         ),
                       );
                     } else {
-                      return Image.network(provider.imageUrl, fit: BoxFit.fill);
+                      return Stack(
+                        children: <Widget>[
+                          Positioned.fill(
+                            child:
+                                Image.file(provider.image, fit: BoxFit.cover),
+                          ),
+                          Positioned(
+                            top: 15,
+                            left: 15,
+                            child: InkWell(
+                              onTap: () => provider.isImageSelected = false,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(0.6),
+                                    shape: BoxShape.circle),
+                                width: 25,
+                                height: 25,
+                                child: Icon(
+                                  Icons.close,
+                                  size: 20,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
                     }
                   }),
                 ),
@@ -172,8 +206,14 @@ class _NewSpotModalState extends State<NewSpotModal> {
         (position.first.position.latitude + position.first.position.longitude)
             .toString();
 
-    String owner =
-        Provider.of<UserProvider>(context, listen: false).user.providerId;
+    String owner = Provider.of<UserProvider>(context, listen: false).user.uid;
+
+    var imageProvider =
+        Provider.of<ImagePickerProvider>(context, listen: false);
+
+    if (imageProvider.image.existsSync()) {
+      await imageProvider.uploadImage(image: imageProvider.image);
+    }
 
     TouristSpot newSpot = TouristSpot(
       title: _nameController.text,
@@ -182,9 +222,7 @@ class _NewSpotModalState extends State<NewSpotModal> {
       associatedMarkerId: markerId,
       rating: 0,
       isFavorite: false,
-      mainPicture:
-          Provider.of<ImagePickerProvider>(context, listen: false).imageUrl ??
-              '',
+      mainPicture: imageProvider.imageUrl,
       category: _categoriesController.text,
       pinColor: Provider.of<PinColorProvider>(context, listen: false)
           .currentColor
@@ -213,6 +251,8 @@ class _NewSpotModalState extends State<NewSpotModal> {
     Provider.of<FireStoreProvider>(context, listen: false).addMarker(marker);
 
     //Provider.of<MarkersProvider>(context, listen: false).addNewMarker(marker);
+
+    imageProvider.isImageSelected = false;
 
     Navigator.pop(context);
   }
