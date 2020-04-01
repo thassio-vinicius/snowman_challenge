@@ -5,6 +5,7 @@ import 'package:snowmanchallenge/providers/firestore_provider.dart';
 import 'package:snowmanchallenge/providers/imagepicker_provider.dart';
 import 'package:snowmanchallenge/providers/markers_provider.dart';
 import 'package:snowmanchallenge/providers/pincolor_provider.dart';
+import 'package:snowmanchallenge/providers/spots_provider.dart';
 import 'package:snowmanchallenge/providers/user_provider.dart';
 import 'package:snowmanchallenge/screens/home.dart';
 import 'package:snowmanchallenge/screens/sign_options.dart';
@@ -21,10 +22,11 @@ void main() {
       ChangeNotifierProvider(create: (_) => ImagePickerProvider()),
       ChangeNotifierProvider(create: (_) => FireStoreProvider()),
       ChangeNotifierProvider(create: (_) => UserProvider()),
+      ChangeNotifierProvider(create: (_) => SpotsProvider()),
       ChangeNotifierProxyProvider<FireStoreProvider, AuthenticationProvider>(
           create: (_) => AuthenticationProvider(),
           update: (_, fireStore, authentication) =>
-              AuthenticationProvider(firestoreProvider: fireStore)),
+              AuthenticationProvider(fireStoreProvider: fireStore)),
     ],
     child: MaterialApp(
       initialRoute: '/signOptionsFalse',

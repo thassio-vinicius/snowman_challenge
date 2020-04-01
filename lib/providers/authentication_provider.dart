@@ -5,29 +5,29 @@ import 'package:snowmanchallenge/models/user.dart';
 import 'package:snowmanchallenge/providers/firestore_provider.dart';
 
 class AuthenticationProvider extends ChangeNotifier {
-  AuthenticationProvider({this.firestoreProvider});
+  AuthenticationProvider({this.fireStoreProvider});
 
   FacebookLogin _facebookLogin = FacebookLogin();
-  FireStoreProvider firestoreProvider;
+  FireStoreProvider fireStoreProvider;
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
   checkNaddUser(
       {FirebaseUser firebaseUser,
       Map<String, dynamic> user,
       bool checkFromSignIn = false}) async {
-    bool checkReturn = await firestoreProvider.database
+    bool checkReturn = await fireStoreProvider.database
         .collection('users')
         .getDocuments()
         .then((docs) {
       for (int i = 0; i < docs.documents.length; i++) {
         if (checkFromSignIn) {
           if (docs.documents[i].data['email'] != firebaseUser.email) {
-            firestoreProvider.addUser(user);
+            fireStoreProvider.addUser(user);
             return true;
           }
         } else {
           if (docs.documents[i].data['email'] != user['email']) {
-            firestoreProvider.addUser(user);
+            fireStoreProvider.addUser(user);
             return true;
           }
         }

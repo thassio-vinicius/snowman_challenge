@@ -11,4 +11,8 @@ class PinColorProvider extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  getHexColorCurrentValue() {
+    return _color.toString().toUpperCase().substring(8).replaceAll(')', '');
+  }
 }

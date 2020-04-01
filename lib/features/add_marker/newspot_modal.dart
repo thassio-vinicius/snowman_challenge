@@ -1,14 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:snowmanchallenge/features/add_marker/components/custom_backbutton.dart';
 import 'package:snowmanchallenge/features/add_marker/components/custom_button.dart';
 import 'package:snowmanchallenge/features/add_marker/components/custom_colorpicker.dart';
 import 'package:snowmanchallenge/features/add_marker/components/custom_imagepicker.dart';
 import 'package:snowmanchallenge/features/add_marker/components/custom_textbox.dart';
-import 'package:snowmanchallenge/marker_modal.dart';
 import 'package:snowmanchallenge/models/tourist_spot.dart';
 import 'package:snowmanchallenge/providers/firestore_provider.dart';
 import 'package:snowmanchallenge/providers/imagepicker_provider.dart';
@@ -17,9 +15,7 @@ import 'package:snowmanchallenge/providers/user_provider.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
 class NewSpotModal extends StatefulWidget {
-  const NewSpotModal({@required this.modalContext});
-
-  final BuildContext modalContext;
+  const NewSpotModal();
 
   @override
   _NewSpotModalState createState() => _NewSpotModalState();
@@ -29,18 +25,14 @@ class _NewSpotModalState extends State<NewSpotModal> {
   TextEditingController _categoriesController = TextEditingController();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _locationController = TextEditingController();
+  PinColorProvider _colorProvider;
   TextEditingController _pinController;
 
   @override
   void didChangeDependencies() {
-    _pinController = TextEditingController(
-        text: '#' +
-            Provider.of<PinColorProvider>(context, listen: false)
-                .currentColor
-                .toString()
-                .toUpperCase()
-                .substring(9)
-                .replaceAll(')', ''));
+    _colorProvider = Provider.of<PinColorProvider>(context, listen: false);
+    _pinController =
+        TextEditingController(text: _colorProvider.getHexColorCurrentValue());
     super.didChangeDependencies();
   }
 
@@ -61,7 +53,10 @@ class _NewSpotModalState extends State<NewSpotModal> {
           children: <Widget>[
             Align(
               alignment: Alignment.centerLeft,
-              child: CustomBackButton(onTap: () => _onBackTapped()),
+              child: CustomBackButton(
+                onTap: () => _onBackTapped(),
+                icon: Icons.arrow_back,
+              ),
             ),
             Container(
               child: AlertDialog(
@@ -199,9 +194,6 @@ class _NewSpotModalState extends State<NewSpotModal> {
       localeIdentifier: 'pt_BR',
     );
 
-    LatLng latLng = LatLng(
-        position.first.position.latitude, position.first.position.longitude);
-
     String markerId =
         (position.first.position.latitude + position.first.position.longitude)
             .toString();
@@ -219,38 +211,16 @@ class _NewSpotModalState extends State<NewSpotModal> {
       title: _nameController.text,
       location: _locationController.text,
       owner: owner,
-      associatedMarkerId: markerId,
+      id: markerId,
       rating: 0,
       isFavorite: false,
       mainPicture: imageProvider.imageUrl,
       category: _categoriesController.text,
-      pinColor: Provider.of<PinColorProvider>(context, listen: false)
-          .currentColor
-          .toString()
-          .toUpperCase()
-          .substring(9)
-          .replaceAll(')', ''),
-    );
-
-    Marker marker = Marker(
-      markerId: MarkerId(markerId),
-      position: latLng,
-      consumeTapEvents: true,
-      icon: BitmapDescriptor.defaultMarkerWithHue(HSVColor.fromColor(
-              Provider.of<PinColorProvider>(context, listen: false)
-                  .currentColor)
-          .hue),
-      onTap: () => showModalBottomSheet(
-        context: widget.modalContext,
-        builder: (context) => MarkerModal(touristSpot: newSpot),
-      ),
+      pinColor: _colorProvider.getHexColorCurrentValue(),
     );
 
     Provider.of<FireStoreProvider>(context, listen: false)
         .addSpot(newSpot.toJson());
-    Provider.of<FireStoreProvider>(context, listen: false).addMarker(marker);
-
-    //Provider.of<MarkersProvider>(context, listen: false).addNewMarker(marker);
 
     imageProvider.isImageSelected = false;
 

@@ -7,7 +7,7 @@ class TouristSpot extends Equatable {
     @required this.title,
     @required this.location,
     @required this.owner,
-    this.associatedMarkerId,
+    @required this.id,
     this.description,
     this.comments,
     this.category,
@@ -24,7 +24,7 @@ class TouristSpot extends Equatable {
   final String category;
   final String description;
   final List<Comment> comments;
-  final String associatedMarkerId;
+  final String id;
   final String pinColor;
   final double rating;
   final bool isFavorite;
@@ -36,7 +36,7 @@ class TouristSpot extends Equatable {
     String owner,
     String category,
     String description,
-    String associatedMarkerId,
+    String id,
     List<Comment> comments,
     Color pinColor,
     double rating,
@@ -49,7 +49,7 @@ class TouristSpot extends Equatable {
       mainPicture: mainPicture ?? this.mainPicture,
       description: description ?? this.description,
       comments: comments ?? this.comments,
-      associatedMarkerId: associatedMarkerId ?? this.associatedMarkerId,
+      id: id ?? this.id,
       category: category ?? this.category,
       pinColor: pinColor ?? this.pinColor,
       rating: rating ?? this.rating,
@@ -70,7 +70,7 @@ class TouristSpot extends Equatable {
       location: json['location'],
       owner: json['owner'],
       description: json['description'],
-      associatedMarkerId: json['associatedMarkerId'],
+      id: json['id'],
       comments: commentList,
       category: json['category'],
       pinColor: json['pinColor'],
@@ -85,7 +85,7 @@ class TouristSpot extends Equatable {
         'location': this.location,
         'category': this.category,
         'owner': this.owner,
-        'associatedMarkerId': this.associatedMarkerId,
+        'id': this.id,
         'comments': this.comments,
         'description': this.description,
         'pinColor': this.pinColor,
@@ -103,7 +103,7 @@ class TouristSpot extends Equatable {
         owner,
         description,
         comments,
-        associatedMarkerId,
+        id,
         pinColor,
         rating,
         isFavorite,
