@@ -21,30 +21,12 @@ class _HomeState extends State<Home> {
         top: false,
         child: Consumer<UserProvider>(
           builder: (context, provider, child) {
-            bool anonymous = false;
-
-            ///This is a workaround, because if i sign in with facebook and
-            ///restart the app later, firebase keeps a non-anonymous access
-            ///token and passes it to the new anonymous user somehow. Since
-            ///i don't have time to deal with this, i ended up leaving this
-            ///simple nullity-check solution for now.
-
-            var user;
-
-            if (provider.user == null) {
-              user = provider.customUser;
-            } else {
-              user = provider.user;
-            }
-
-            if (user == null) anonymous = true;
-
             return IndexedStack(
               index: _currentIndex,
               children: <Widget>[
-                FavoritesTab(anonymous: anonymous),
-                MapTab(anonymous: anonymous),
-                AccountTab(anonymous: anonymous),
+                FavoritesTab(anonymous: provider.user.isAnonymous),
+                MapTab(anonymous: provider.user.isAnonymous),
+                AccountTab(anonymous: provider.user.isAnonymous),
               ],
             );
           },
