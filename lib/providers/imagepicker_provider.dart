@@ -8,7 +8,7 @@ class ImagePickerProvider extends ChangeNotifier {
   File _image;
   ImageSource _imageSource;
   String _imageUrl;
-  int imageCounter = 0;
+  int _imageCounter = 0;
   bool _isImageSelected = false;
 
   bool get isImageSelected => _isImageSelected;
@@ -42,11 +42,11 @@ class ImagePickerProvider extends ChangeNotifier {
   }
 
   uploadImage({File image}) async {
-    imageCounter++;
+    _imageCounter++;
 
     StorageReference reference = FirebaseStorage.instance
         .ref()
-        .child('spotPictures/${image.path + imageCounter.toString()}');
+        .child('spotPictures/${image.path + _imageCounter.toString()}');
     StorageUploadTask uploadTask = reference.putFile(image);
     await uploadTask.onComplete;
     print('uploaded');

@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class FireStoreProvider extends ChangeNotifier {
   Firestore _database = Firestore.instance;
@@ -13,6 +12,14 @@ class FireStoreProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<DocumentSnapshot> getSpotById(String id) {
+    return _database.document('spots/$id').get();
+  }
+
+  updateSpot({String id, String key, dynamic value, int index}) async {
+    await _database.document('spots/$id').updateData({key[index]: value});
+  }
+
   void addUser(Map<String, dynamic> user) {
     _database.collection('users').add(user);
 
@@ -21,15 +28,6 @@ class FireStoreProvider extends ChangeNotifier {
 
   void removeSpot(String path) {
     _database.collection('spots').document(path).delete();
-
-    notifyListeners();
-  }
-
-  void addMarker(Marker marker) async {
-    _database.collection('markers').add({
-      'markerId': marker.markerId.value,
-      'position': [marker.position.latitude, marker.position.longitude],
-    });
 
     notifyListeners();
   }

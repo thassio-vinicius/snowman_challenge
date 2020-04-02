@@ -13,7 +13,6 @@ import 'package:snowmanchallenge/marker_sheet.dart';
 import 'package:snowmanchallenge/models/tourist_spot.dart';
 import 'package:snowmanchallenge/providers/firestore_provider.dart';
 import 'package:snowmanchallenge/providers/markers_provider.dart';
-import 'package:snowmanchallenge/providers/spots_provider.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
 class MapTab extends StatefulWidget {
@@ -29,8 +28,9 @@ class _MapTabState extends State<MapTab> with SingleTickerProviderStateMixin {
   AnimationController _animationController;
   Duration _duration = Duration(milliseconds: 500);
   Tween<Offset> _tween = Tween(begin: Offset(0, 1), end: Offset(0, 0));
-  TouristSpot _spot;
+  bool _showDraggableSheet = false;
   Stream<QuerySnapshot> _stream;
+  String _spotId;
 
   @override
   void initState() {
@@ -48,30 +48,29 @@ class _MapTabState extends State<MapTab> with SingleTickerProviderStateMixin {
     );
   }
 
-  _populateMarkers(Map<String, dynamic> spots) async {
-    TouristSpot spot = TouristSpot.fromJson(spots);
-    Marker marker = Marker(
-      markerId: MarkerId(spot.id),
-      position: await _getPosition(spot.location),
-      icon: BitmapDescriptor.defaultMarkerWithHue(
-        HSVColor.fromColor(
-          HexColor(spot.pinColor),
-        ).hue,
-      ),
-      onTap: () async {
-        setState(() {
-          _spot = spot;
-        });
-        if (_animationController.isDismissed)
-          _animationController.forward();
-        else if (_animationController.isCompleted)
-          _animationController.reverse();
-      },
-    );
-
-    Provider.of<MarkersProvider>(context, listen: false).addNewMarker(marker);
-
-    Provider.of<SpotsProvider>(context, listen: false).addSpot(spot);
+  _populateSpots({List<DocumentSnapshot> documents}) async {
+    for (int i = 0; i < documents.length; i++) {
+      TouristSpot spot = TouristSpot.fromJson(documents[i].data);
+      Marker marker = Marker(
+        markerId: MarkerId(spot.id),
+        position: await _getPosition(spot.location),
+        icon: BitmapDescriptor.defaultMarkerWithHue(
+          HSVColor.fromColor(
+            HexColor(spot.pinColor),
+          ).hue,
+        ),
+        onTap: () {
+          setState(() {
+            _spotId = documents[i].documentID;
+            _showDraggableSheet = !_showDraggableSheet;
+            print('spot id ' + _spotId);
+            print(' id ' + documents[i].documentID);
+          });
+          Timer(Duration(milliseconds: 200), () => _animationHandler());
+        },
+      );
+      Provider.of<MarkersProvider>(context, listen: false).addNewMarker(marker);
+    }
   }
 
   @override
@@ -97,9 +96,7 @@ class _MapTabState extends State<MapTab> with SingleTickerProviderStateMixin {
                 break;
               case ConnectionState.active:
                 if (snapshot.data.documents.isNotEmpty) {
-                  for (int i = 0; i < snapshot.data.documents.length; i++) {
-                    _populateMarkers(snapshot.data.documents[i].data);
-                  }
+                  _populateSpots(documents: snapshot.data.documents);
                 }
 
                 return Stack(
@@ -127,21 +124,26 @@ class _MapTabState extends State<MapTab> with SingleTickerProviderStateMixin {
                         dialogPressed: NewSpotModal(),
                       ),
                     ),
-                    SizedBox.expand(
-                      child: SlideTransition(
-                        position: _tween.animate(_animationController),
-                        child: DraggableScrollableSheet(
-                          initialChildSize: 0.35,
-                          minChildSize: 0.35,
-                          maxChildSize: 0.95,
-                          builder: (context, scrollController) => MarkerSheet(
-                            touristSpot: _spot,
-                            scrollController: scrollController,
-                            onClose: () => _animationController.reverse(),
+                    if (_showDraggableSheet)
+                      SizedBox.expand(
+                        child: SlideTransition(
+                          position: _tween.animate(_animationController),
+                          child: DraggableScrollableSheet(
+                            initialChildSize: 0.50,
+                            minChildSize: 0.5,
+                            maxChildSize: 0.95,
+                            builder: (context, scrollController) => MarkerSheet(
+                              id: _spotId,
+                              scrollController: scrollController,
+                              onClose: () {
+                                if (_animationController.isCompleted) {
+                                  _animationController.reverse();
+                                }
+                              },
+                            ),
                           ),
                         ),
                       ),
-                    ),
                   ],
                 );
                 break;
@@ -153,5 +155,11 @@ class _MapTabState extends State<MapTab> with SingleTickerProviderStateMixin {
         ),
       ),
     );
+  }
+
+  _animationHandler() {
+    if (_animationController.isDismissed) {
+      _animationController.forward();
+    }
   }
 }

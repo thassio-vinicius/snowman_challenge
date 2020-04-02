@@ -14,7 +14,7 @@ class CustomBackButton extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(6)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black12,
+              color: Colors.black38,
               offset: Offset(0.0, 1.0),
               blurRadius: 2,
             ),

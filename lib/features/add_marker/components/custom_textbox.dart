@@ -11,6 +11,9 @@ class CustomTextBox extends StatefulWidget {
     @required this.controller,
     this.onColorBoxTap,
     this.onLocationBoxSubmitted,
+    this.maxLines,
+    this.maxLength,
+    this.boxPercentageHeight = 0.07,
     this.isLocationTextBox = false,
     this.isColorPicker = false,
   });
@@ -18,9 +21,12 @@ class CustomTextBox extends StatefulWidget {
   final VoidCallback onColorBoxTap;
   final Function onLocationBoxSubmitted;
   final String label;
+  final int maxLines;
+  final int maxLength;
   final TextEditingController controller;
   final bool isLocationTextBox;
   final bool isColorPicker;
+  final double boxPercentageHeight;
 
   @override
   _CustomTextBoxState createState() => _CustomTextBoxState();
@@ -36,7 +42,8 @@ class _CustomTextBoxState extends State<CustomTextBox> {
           children: <Widget>[
             Container(
               width: MediaQuery.of(context).size.width * 0.70,
-              height: MediaQuery.of(context).size.height * 0.07,
+              height: MediaQuery.of(context).size.height *
+                  widget.boxPercentageHeight,
               child: Column(
                 children: <Widget>[
                   Expanded(
@@ -52,6 +59,9 @@ class _CustomTextBoxState extends State<CustomTextBox> {
                         builder: (context, provider, child) => TextField(
                           controller: widget.controller,
                           cursorColor: Colors.black,
+                          maxLength: widget.maxLength,
+                          maxLines: 5,
+                          maxLengthEnforced: widget.maxLength != null,
                           style: GoogleFonts.nunito(
                             textStyle: TextStyle(
                               fontWeight: FontWeight.w400,

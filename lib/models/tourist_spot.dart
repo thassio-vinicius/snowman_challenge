@@ -58,11 +58,13 @@ class TouristSpot extends Equatable {
   }
 
   factory TouristSpot.fromJson(Map<String, dynamic> json) {
-    List<Comment> commentList = [];
+    List<Comment> comments = [];
 
     if (json['comments'] != null) {
-      var list = json['comments'] as List;
-      commentList = list.map((e) => Comment.fromJson(e)).toList();
+      print(json['comments']);
+
+      var list = List.from(json['comments']);
+      list.map((e) => comments.add(Comment.fromJson(e)));
     }
 
     return TouristSpot(
@@ -71,7 +73,7 @@ class TouristSpot extends Equatable {
       owner: json['owner'],
       description: json['description'],
       id: json['id'],
-      comments: commentList,
+      comments: comments,
       category: json['category'],
       pinColor: json['pinColor'],
       rating: json['rating'],
@@ -86,7 +88,7 @@ class TouristSpot extends Equatable {
         'category': this.category,
         'owner': this.owner,
         'id': this.id,
-        'comments': this.comments,
+        'comments': this.comments.map((e) => e.toJson()).toList(),
         'description': this.description,
         'pinColor': this.pinColor,
         'rating': this.rating,

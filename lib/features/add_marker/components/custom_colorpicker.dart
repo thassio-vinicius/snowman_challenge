@@ -21,32 +21,35 @@ class _CustomColorPickerState extends State<CustomColorPicker> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      backgroundColor: Colors.white,
-      actionsPadding:
-          EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.22),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8))),
-      actions: <Widget>[
-        CustomButton(
-          onTap: () => Navigator.pop(context),
-          label: 'Confirm color',
-          percentageWidth: 0.35,
-        ),
-      ],
-      content: SingleChildScrollView(
-        child: Center(
-          child: ColorPicker(
-            pickerAreaHeightPercent: 0.10,
-            pickerColor: _currentPinColor,
-            onColorChanged: (newColor) {
-              setState(() {
-                Provider.of<PinColorProvider>(context, listen: false)
-                    .newColor(newColor);
-                _currentPinColor = newColor;
-              });
-            },
-            paletteType: PaletteType.rgb,
+    return Theme(
+      data: ThemeData.light(),
+      child: AlertDialog(
+        backgroundColor: Colors.white,
+        actionsPadding:
+            EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.22),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8))),
+        actions: <Widget>[
+          CustomButton(
+            onTap: () => Navigator.pop(context),
+            label: 'Confirm color',
+            percentageWidth: 0.35,
+          ),
+        ],
+        content: SingleChildScrollView(
+          child: Center(
+            child: ColorPicker(
+              pickerAreaHeightPercent: 0.10,
+              pickerColor: _currentPinColor,
+              onColorChanged: (newColor) {
+                setState(() {
+                  Provider.of<PinColorProvider>(context, listen: false)
+                      .newColor(newColor);
+                  _currentPinColor = newColor;
+                });
+              },
+              paletteType: PaletteType.rgb,
+            ),
           ),
         ),
       ),
