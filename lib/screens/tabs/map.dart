@@ -31,18 +31,22 @@ class _MapTabState extends State<MapTab> with SingleTickerProviderStateMixin {
   Tween<Offset> _tween = Tween(begin: Offset(0, 1), end: Offset(0, 0));
   bool _showDraggableSheet = false;
   Stream<QuerySnapshot> _stream;
-  bool _gotLocation = false;
+  //bool _gotLocation = false;
   String _spotId;
-  LatLng _position;
+  //LatLng _position;
 
+  /*
   Future<Position> _getUserPosition() async {
     return await Geolocator()
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.medium);
   }
 
+   */
+
   @override
   void initState() {
     super.initState();
+    /*
     _getUserPosition().then((value) {
       setState(() {
         _position = LatLng(
@@ -52,6 +56,8 @@ class _MapTabState extends State<MapTab> with SingleTickerProviderStateMixin {
         _gotLocation = true;
       });
     });
+
+     */
     _animationController =
         AnimationController(vsync: this, duration: _duration);
   }
@@ -125,26 +131,27 @@ class _MapTabState extends State<MapTab> with SingleTickerProviderStateMixin {
                   children: <Widget>[
                     Consumer<MarkersProvider>(
                       builder: (context, provider, child) {
-                        return _gotLocation
-                            ? GoogleMap(
-                                mapType: MapType.normal,
-                                mapToolbarEnabled: false,
-                                myLocationEnabled: true,
-                                myLocationButtonEnabled: false,
-                                initialCameraPosition: CameraPosition(
-                                  target: _position,
-                                  zoom: 15,
-                                ),
-                                onMapCreated:
-                                    (GoogleMapController controller) async {
-                                  _mapController.complete(controller);
-                                  await _getUserPosition();
-                                },
-                                markers: provider.markers,
-                              )
-                            : Center(
+                        return //_gotLocation ?
+                            GoogleMap(
+                          mapType: MapType.normal,
+                          mapToolbarEnabled: false,
+                          myLocationEnabled: true,
+                          myLocationButtonEnabled: false,
+                          initialCameraPosition: CameraPosition(
+                            target: LatLng(-25.448173, -49.270127),
+                            zoom: 15,
+                          ),
+                          onMapCreated: (GoogleMapController controller) async {
+                            _mapController.complete(controller);
+                            //await _getUserPosition();
+                          },
+                          markers: provider.markers,
+                        );
+                        /*: Center(
                                 child: CustomProgressIndicator(),
                               );
+
+                             */
                       },
                     ),
                     Positioned(
