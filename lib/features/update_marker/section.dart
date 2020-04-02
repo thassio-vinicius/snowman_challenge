@@ -3,10 +3,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:snowmanchallenge/features/update_marker/add_comment.dart';
 import 'package:snowmanchallenge/features/update_marker/add_description.dart';
-import 'package:snowmanchallenge/features/update_marker/comment_section.dart';
+import 'package:snowmanchallenge/features/update_marker/components/comment_section.dart';
 import 'package:snowmanchallenge/features/update_marker/empty_description.dart';
-import 'package:snowmanchallenge/features/update_marker/section_button.dart';
-import 'package:snowmanchallenge/marker_sheet.dart';
+import 'package:snowmanchallenge/features/update_marker/components/section_button.dart';
+import 'package:snowmanchallenge/features/update_marker/marker_sheet.dart';
 import 'package:snowmanchallenge/models/comment_list.dart';
 import 'package:snowmanchallenge/providers/firestore_provider.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
@@ -181,12 +181,13 @@ class _SectionState extends State<Section> {
         }
         break;
       case DescriptionSection.commentSection:
-        if (comments != null && comments.comments.length > 2) {
-          return comments.comments
-              .sublist(0, 1)
-              .map((e) => CommentSection(
-                  owner: e.owner, comment: e.comment, rating: e.rating))
-              .toList();
+        if (comments != null && comments.comments.length == 2) {
+          return ListView(
+              children: comments.comments
+                  .sublist(0, 2)
+                  .map((e) => CommentSection(
+                      owner: e.owner, comment: e.comment, rating: e.rating))
+                  .toList());
         } else if (comments != null && comments.comments.length == 1) {
           return CommentSection(
             owner: comments.comments.first.owner,

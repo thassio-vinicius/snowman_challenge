@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:snowmanchallenge/features/add_marker/components/custom_button.dart';
 import 'package:snowmanchallenge/providers/imagepicker_provider.dart';
+import 'package:snowmanchallenge/shared/components/custom_button.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
 class ImageSelect extends StatefulWidget {

@@ -1,16 +1,33 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:snowmanchallenge/screens/login_button.dart';
-import 'package:snowmanchallenge/screens/signup.dart';
+import 'package:provider/provider.dart';
+import 'package:snowmanchallenge/features/authentication/components/anonymous_button.dart';
+import 'package:snowmanchallenge/features/authentication/components/login_button.dart';
+import 'package:snowmanchallenge/features/authentication/signup.dart';
+import 'package:snowmanchallenge/providers/authentication_provider.dart';
+import 'package:snowmanchallenge/shared/components/custom_progress_indicator.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
-import 'anonymous_button.dart';
-
-class SignOptions extends StatelessWidget {
+class SignOptions extends StatefulWidget {
   const SignOptions({@required this.isSignUpOption});
 
   final bool isSignUpOption;
+
+  @override
+  _SignOptionsState createState() => _SignOptionsState();
+}
+
+class _SignOptionsState extends State<SignOptions> {
+  Stream _stream;
+
+  @override
+  void didChangeDependencies() {
+    _stream = Provider.of<AuthenticationProvider>(context, listen: false)
+        .firebaseAuth
+        .onAuthStateChanged;
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,23 +44,42 @@ class SignOptions extends StatelessWidget {
   }
 
   Widget _buildLoginCard(BuildContext context) {
-    return Center(
-      child: Container(
-        width: MediaQuery.of(context).size.width * 0.85,
-        height: MediaQuery.of(context).size.height * 0.70,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(8)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black12,
-              offset: Offset(2.0, 4.0),
-              blurRadius: 24,
-            ),
-          ],
-        ),
-        child: isSignUpOption ? SignUp() : _buildOptionsContent(context),
-      ),
+    return StreamBuilder(
+      stream: _stream,
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting:
+            return Center(
+              child: Container(
+                padding: EdgeInsets.all(70),
+                child: CustomProgressIndicator(),
+              ),
+            );
+            break;
+          default:
+            return Center(
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.85,
+                height: MediaQuery.of(context).size.height * 0.70,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      offset: Offset(2.0, 4.0),
+                      blurRadius: 24,
+                    ),
+                  ],
+                ),
+                child: widget.isSignUpOption
+                    ? SignUp()
+                    : _buildOptionsContent(context),
+              ),
+            );
+            break;
+        }
+      },
     );
   }
 
@@ -137,6 +173,8 @@ class SignOptions extends StatelessWidget {
   }
 
   Container _buildBackground(BuildContext context) {
+    //CustomPaint()
+
     return Container(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,

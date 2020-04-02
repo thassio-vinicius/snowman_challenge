@@ -6,13 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:snowmanchallenge/custom_progress_indicator.dart';
-import 'package:snowmanchallenge/custom_searchbox.dart';
 import 'package:snowmanchallenge/features/add_marker/newspot_modal.dart';
-import 'package:snowmanchallenge/marker_sheet.dart';
+import 'package:snowmanchallenge/features/search/custom_searchbox.dart';
+import 'package:snowmanchallenge/features/update_marker/marker_sheet.dart';
 import 'package:snowmanchallenge/models/tourist_spot.dart';
 import 'package:snowmanchallenge/providers/firestore_provider.dart';
 import 'package:snowmanchallenge/providers/markers_provider.dart';
+import 'package:snowmanchallenge/shared/components/custom_progress_indicator.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
 class MapTab extends StatefulWidget {
@@ -63,8 +63,6 @@ class _MapTabState extends State<MapTab> with SingleTickerProviderStateMixin {
           setState(() {
             _spotId = documents[i].documentID;
             _showDraggableSheet = !_showDraggableSheet;
-            print('spot id ' + _spotId);
-            print(' id ' + documents[i].documentID);
           });
           Timer(Duration(milliseconds: 200), () => _animationHandler());
         },
@@ -84,6 +82,13 @@ class _MapTabState extends State<MapTab> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    ///Since this project involves multiple tabs and modals, the controller gets
+    ///disposed every time i switch from map tab to another screen. And the completer
+    ///doesn't reset once it's completed. That's why the solution i found was to
+    ///declarate the controller inside build method. It ensures the controller
+    ///always rebuilds when i switch to map tab. Maybe there's a better solution,
+    ///but this was the fastest one.
+
     final Completer<GoogleMapController> _mapController = Completer();
     return Scaffold(
       body: SafeArea(

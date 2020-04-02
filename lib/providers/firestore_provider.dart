@@ -12,12 +12,27 @@ class FireStoreProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Stream<QuerySnapshot> getStreamSpots() {
+    return _database.collection('spots').snapshots();
+  }
+
+  Future<QuerySnapshot> getFutureSpots() {
+    return _database.collection('spots').getDocuments();
+  }
+
   Future<DocumentSnapshot> getSpotById(String id) {
     return _database.document('spots/$id').get();
   }
 
-  updateSpot({String id, String key, dynamic value, int index}) async {
-    await _database.document('spots/$id').updateData({key[index]: value});
+  updateSpot(
+      {String id, String key, dynamic value, bool isArray = false}) async {
+    if (isArray) {
+      _database
+          .document('spots/$id')
+          .updateData({key: FieldValue.arrayUnion(value)});
+    } else {
+      await _database.document('spots/$id').updateData({key: value});
+    }
   }
 
   void addUser(Map<String, dynamic> user) {

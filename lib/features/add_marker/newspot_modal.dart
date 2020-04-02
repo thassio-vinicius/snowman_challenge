@@ -2,16 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
-import 'package:snowmanchallenge/features/add_marker/components/custom_backbutton.dart';
-import 'package:snowmanchallenge/features/add_marker/components/custom_button.dart';
 import 'package:snowmanchallenge/features/add_marker/components/custom_colorpicker.dart';
-import 'package:snowmanchallenge/features/add_marker/components/custom_textbox.dart';
-import 'package:snowmanchallenge/image_select.dart';
+import 'package:snowmanchallenge/features/add_marker/components/image_select.dart';
 import 'package:snowmanchallenge/models/tourist_spot.dart';
 import 'package:snowmanchallenge/providers/firestore_provider.dart';
 import 'package:snowmanchallenge/providers/imagepicker_provider.dart';
 import 'package:snowmanchallenge/providers/pincolor_provider.dart';
 import 'package:snowmanchallenge/providers/user_provider.dart';
+import 'package:snowmanchallenge/shared/components/custom_backbutton.dart';
+import 'package:snowmanchallenge/shared/components/custom_button.dart';
+import 'package:snowmanchallenge/shared/components/custom_textbox.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
 class NewSpotModal extends StatefulWidget {

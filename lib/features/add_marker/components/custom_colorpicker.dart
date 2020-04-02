@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:provider/provider.dart';
-import 'package:snowmanchallenge/features/add_marker/components/custom_button.dart';
 import 'package:snowmanchallenge/providers/pincolor_provider.dart';
+import 'package:snowmanchallenge/shared/components/custom_button.dart';
 
 class CustomColorPicker extends StatefulWidget {
   @override

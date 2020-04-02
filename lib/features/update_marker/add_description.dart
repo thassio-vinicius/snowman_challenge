@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:snowmanchallenge/features/add_marker/components/custom_textbox.dart';
 import 'package:snowmanchallenge/providers/firestore_provider.dart';
+import 'package:snowmanchallenge/shared/components/custom_textbox.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
 class AddDescription extends StatefulWidget {

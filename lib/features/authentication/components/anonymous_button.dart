@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:snowmanchallenge/screens/anonymous_dialog.dart';
+import 'file:///C:/Users/Usuario/AndroidStudioProjects/snowman_challenge/lib/features/authentication/anonymous_dialog.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
 class AnonymousButton extends StatelessWidget {

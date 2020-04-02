@@ -2,12 +2,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:snowmanchallenge/features/add_marker/components/custom_button.dart';
-import 'package:snowmanchallenge/features/add_marker/components/custom_textbox.dart';
 import 'package:snowmanchallenge/models/user.dart';
 import 'package:snowmanchallenge/providers/authentication_provider.dart';
 import 'package:snowmanchallenge/providers/user_provider.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
+
+import 'file:///C:/Users/Usuario/AndroidStudioProjects/snowman_challenge/lib/shared/components/custom_button.dart';
+import 'file:///C:/Users/Usuario/AndroidStudioProjects/snowman_challenge/lib/shared/components/custom_textbox.dart';
 
 class SignUp extends StatefulWidget {
   @override

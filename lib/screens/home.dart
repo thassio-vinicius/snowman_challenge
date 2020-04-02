@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:snowmanchallenge/custom_progress_indicator.dart';
 import 'package:snowmanchallenge/models/tab.dart';
 import 'package:snowmanchallenge/providers/authentication_provider.dart';
-import 'package:snowmanchallenge/screens/favorites.dart';
-import 'package:snowmanchallenge/screens/map.dart';
-import 'package:snowmanchallenge/screens/user_account.dart';
+import 'package:snowmanchallenge/screens/tabs/favorites.dart';
+import 'package:snowmanchallenge/screens/tabs/map.dart';
+import 'package:snowmanchallenge/screens/tabs/user_account.dart';
+import 'package:snowmanchallenge/shared/components/custom_progress_indicator.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
 class Home extends StatefulWidget {

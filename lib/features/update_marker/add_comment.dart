@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:snowmanchallenge/features/add_marker/components/custom_button.dart';
-import 'package:snowmanchallenge/features/add_marker/components/custom_textbox.dart';
+import 'package:snowmanchallenge/features/update_marker/components/star_rating.dart';
 import 'package:snowmanchallenge/models/comment.dart';
 import 'package:snowmanchallenge/providers/firestore_provider.dart';
 import 'package:snowmanchallenge/providers/user_provider.dart';
-import 'package:snowmanchallenge/star_rating.dart';
+import 'package:snowmanchallenge/shared/components/custom_button.dart';
+import 'package:snowmanchallenge/shared/components/custom_textbox.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
 class AddComment extends StatefulWidget {
@@ -127,7 +127,7 @@ class _AddCommentState extends State<AddComment> {
 
     Provider.of<FireStoreProvider>(context, listen: false).updateSpot(
         id: widget.id,
-        index: widget.commentsLength + 1,
+        isArray: true,
         key: 'comments',
         value: comments.map((e) => e.toJson()).toList());
 
