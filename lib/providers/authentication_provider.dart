@@ -11,6 +11,12 @@ class AuthenticationProvider extends ChangeNotifier {
   FireStoreProvider fireStoreProvider;
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
+  Future<AuthResult> signInAnonymously() async {
+    AuthResult auth = await firebaseAuth.signInAnonymously();
+
+    return auth;
+  }
+
   checkAndAddUser(
       {FirebaseUser firebaseUser,
       Map<String, dynamic> user,

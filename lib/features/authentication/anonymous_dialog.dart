@@ -1,5 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:snowmanchallenge/providers/authentication_provider.dart';
+import 'package:snowmanchallenge/providers/user_provider.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
 class AnonymousDialog extends StatelessWidget {
@@ -26,7 +30,17 @@ class AnonymousDialog extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             GestureDetector(
-              onTap: () => Navigator.pushReplacementNamed(context, '/home'),
+              onTap: () async {
+                AuthResult auth = await Provider.of<AuthenticationProvider>(
+                        context,
+                        listen: false)
+                    .signInAnonymously();
+
+                Provider.of<UserProvider>(context, listen: false)
+                    .saveUserInfo(auth.user);
+
+                Navigator.pushReplacementNamed(context, '/home');
+              },
               child: Text(
                 "Got it!",
                 style: GoogleFonts.nunito(
