@@ -24,11 +24,15 @@
 	<true/>
 	<key>UILaunchStoryboardName</key>
 	<key>NSCameraUsageDescription</key>
-    <string>Enable Snowman Challenge to access your camera to capture your photo</string>
+    <string>Snowman Challenge needs to access your camera</string>
     <key>NSPhotoLibraryUsageDescription</key>
-    <string>Enable Snowman Challenge to access your gallery</string>
+    <string>Snowman Challenge needs to access your gallery</string>
     <key>NSMicrophoneUsageDescription</key>
-    <string>Enable Snowman Challenge to access your mic and record your voice</string>
+    <string>Snowman Challenge needs to access your mic</string>
+     <key>NSLocationWhenInUseUsageDescription</key>
+        <string>Snowman Challenge needs to access your current location</string>
+        <key>NSLocationAlwaysUsageDescription</key>
+        <string>Snowman Challenge needs to access your current location</string>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>

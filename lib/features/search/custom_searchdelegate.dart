@@ -13,6 +13,8 @@ class CustomSearchDelegate extends SearchDelegate {
     );
   }
 
+  ///Unimplemented feature
+
   @override
   Widget buildSuggestions(BuildContext context) => Container();
 

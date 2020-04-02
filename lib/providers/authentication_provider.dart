@@ -11,7 +11,7 @@ class AuthenticationProvider extends ChangeNotifier {
   FireStoreProvider fireStoreProvider;
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
-  checkNaddUser(
+  checkAndAddUser(
       {FirebaseUser firebaseUser,
       Map<String, dynamic> user,
       bool checkFromSignIn = false}) async {
@@ -19,15 +19,20 @@ class AuthenticationProvider extends ChangeNotifier {
         .collection('users')
         .getDocuments()
         .then((docs) {
+      if (docs.documents.isEmpty) {
+        fireStoreProvider.addUser(user, user['email']);
+        return true;
+      }
+
       for (int i = 0; i < docs.documents.length; i++) {
         if (checkFromSignIn) {
           if (docs.documents[i].data['email'] != firebaseUser.email) {
-            fireStoreProvider.addUser(user);
+            fireStoreProvider.addUser(user, firebaseUser.email);
             return true;
           }
         } else {
           if (docs.documents[i].data['email'] != user['email']) {
-            fireStoreProvider.addUser(user);
+            fireStoreProvider.addUser(user, user['email']);
             return true;
           }
         }
@@ -53,11 +58,11 @@ class AuthenticationProvider extends ChangeNotifier {
         var user = User(
           displayName: auth.user.displayName,
           email: auth.user.email,
-          urlPhoto: auth.user.photoUrl,
-          id: auth.user.uid,
+          photoUrl: auth.user.photoUrl,
+          uid: auth.user.uid,
         ).toJson();
 
-        checkNaddUser(
+        checkAndAddUser(
             firebaseUser: auth.user, user: user, checkFromSignIn: true);
         break;
       case FacebookLoginStatus.cancelledByUser:

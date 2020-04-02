@@ -3,9 +3,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
 class EmptyDescription extends StatelessWidget {
-  const EmptyDescription({this.isCommentSection, this.onTap});
+  const EmptyDescription(
+      {@required this.isCommentSection,
+      @required this.onTap,
+      @required this.anonymous});
 
   final bool isCommentSection;
+  final bool anonymous;
   final Function onTap;
 
   @override
@@ -25,19 +29,20 @@ class EmptyDescription extends StatelessWidget {
               ),
             ),
           ),
-          GestureDetector(
-            onTap: onTap,
-            child: Text(
-              'Try adding one!',
-              style: GoogleFonts.nunito(
-                textStyle: TextStyle(
-                  color: HexColor('#11159A'),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
+          if (anonymous == false)
+            GestureDetector(
+              onTap: onTap,
+              child: Text(
+                'Try adding one!',
+                style: GoogleFonts.nunito(
+                  textStyle: TextStyle(
+                    color: HexColor('#11159A'),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
             ),
-          ),
         ],
       ),
     );

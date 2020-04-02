@@ -61,8 +61,6 @@ class TouristSpot extends Equatable {
     List<Comment> comments = [];
 
     if (json['comments'] != null) {
-      print(json['comments']);
-
       var list = List.from(json['comments']);
       list.map((e) => comments.add(Comment.fromJson(e)));
     }
@@ -88,7 +86,7 @@ class TouristSpot extends Equatable {
         'category': this.category,
         'owner': this.owner,
         'id': this.id,
-        'comments': this.comments.map((e) => e.toJson()).toList(),
+        'comments': this.comments,
         'description': this.description,
         'pinColor': this.pinColor,
         'rating': this.rating,

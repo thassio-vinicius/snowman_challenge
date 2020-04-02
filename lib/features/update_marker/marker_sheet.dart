@@ -14,8 +14,10 @@ class MarkerSheet extends StatefulWidget {
     @required this.id,
     @required this.scrollController,
     @required this.onClose,
+    @required this.anonymous,
   });
 
+  final bool anonymous;
   final String id;
   final Function onClose;
   final ScrollController scrollController;
@@ -128,6 +130,7 @@ class _MarkerSheetState extends State<MarkerSheet> {
     return Column(
       children: <Widget>[
         Section(
+          anonymous: widget.anonymous,
           id: widget.id,
           percentageHeight: 0.07,
           title: snapshot.data.data['title'],
@@ -140,6 +143,7 @@ class _MarkerSheetState extends State<MarkerSheet> {
           child: StarRating(rating: _rating),
         ),
         Section(
+          anonymous: widget.anonymous,
           id: widget.id,
           percentageHeight: 0.08,
           title: 'Category',
@@ -147,6 +151,7 @@ class _MarkerSheetState extends State<MarkerSheet> {
           section: DescriptionSection.categorySection,
         ),
         Section(
+          anonymous: widget.anonymous,
           id: widget.id,
           title: 'About',
           percentageHeight: 0.20,
@@ -154,6 +159,7 @@ class _MarkerSheetState extends State<MarkerSheet> {
           section: DescriptionSection.aboutSection,
         ),
         Section(
+          anonymous: widget.anonymous,
           id: widget.id,
           title: 'Comments',
           percentageHeight: 0.30,

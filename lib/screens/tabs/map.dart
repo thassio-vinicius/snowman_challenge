@@ -13,6 +13,7 @@ import 'package:snowmanchallenge/models/tourist_spot.dart';
 import 'package:snowmanchallenge/providers/firestore_provider.dart';
 import 'package:snowmanchallenge/providers/markers_provider.dart';
 import 'package:snowmanchallenge/shared/components/custom_progress_indicator.dart';
+import 'package:snowmanchallenge/utils/custom_scroll_behavior.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
 class MapTab extends StatefulWidget {
@@ -32,6 +33,10 @@ class _MapTabState extends State<MapTab> with SingleTickerProviderStateMixin {
   Stream<QuerySnapshot> _stream;
   String _spotId;
 
+  Future<Position> _getUserPosition() async {
+    return await Geolocator().getCurrentPosition();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -39,7 +44,7 @@ class _MapTabState extends State<MapTab> with SingleTickerProviderStateMixin {
         AnimationController(vsync: this, duration: _duration);
   }
 
-  _getPosition(String address) async {
+  _getMarkerPosition(String address) async {
     var position = await Geolocator().placemarkFromAddress(address);
 
     return LatLng(
@@ -53,7 +58,7 @@ class _MapTabState extends State<MapTab> with SingleTickerProviderStateMixin {
       TouristSpot spot = TouristSpot.fromJson(documents[i].data);
       Marker marker = Marker(
         markerId: MarkerId(spot.id),
-        position: await _getPosition(spot.location),
+        position: await _getMarkerPosition(spot.location),
         icon: BitmapDescriptor.defaultMarkerWithHue(
           HSVColor.fromColor(
             HexColor(spot.pinColor),
@@ -82,14 +87,6 @@ class _MapTabState extends State<MapTab> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    ///Since this project involves multiple tabs and modals, the controller gets
-    ///disposed every time i switch from map tab to another screen. And the completer
-    ///doesn't reset once it's completed. That's why the solution i found was to
-    ///declarate the controller inside build method. It ensures the controller
-    ///always rebuilds when i switch to map tab. Maybe there's a better solution,
-    ///but this was the fastest one.
-
-    final Completer<GoogleMapController> _mapController = Completer();
     return Scaffold(
       body: SafeArea(
         child: StreamBuilder<QuerySnapshot>(
@@ -103,22 +100,53 @@ class _MapTabState extends State<MapTab> with SingleTickerProviderStateMixin {
                 if (snapshot.data.documents.isNotEmpty) {
                   _populateSpots(documents: snapshot.data.documents);
                 }
-
                 return Stack(
                   children: <Widget>[
                     Consumer<MarkersProvider>(
-                      builder: (context, provider, child) => GoogleMap(
-                        mapType: MapType.normal,
-                        mapToolbarEnabled: false,
-                        initialCameraPosition: CameraPosition(
-                          target: LatLng(-10.686929, -37.422591),
-                          zoom: 18,
-                        ),
-                        onMapCreated: (GoogleMapController controller) {
-                          _mapController.complete(controller);
-                        },
-                        markers: provider.markers,
-                      ),
+                      builder: (context, provider, child) {
+                        return FutureBuilder<Position>(
+                            future: _getUserPosition(),
+                            builder: (context, snapshot) {
+                              switch (snapshot.connectionState) {
+                                case ConnectionState.waiting:
+                                  return Center(
+                                    child: CustomProgressIndicator(),
+                                  );
+                                  break;
+                                default:
+
+                                  ///Since this project involves multiple tabs and modals, the controller gets
+                                  ///disposed every time i switch from map tab to another screen. And the completer
+                                  ///doesn't reset once it's completed. That's why the solution i found was to
+                                  ///declarate the controller inside build method. It ensures the controller
+                                  ///always rebuilds when i switch to map tab. Maybe there's a better solution,
+                                  ///but this was the fastest one.
+
+                                  final Completer<GoogleMapController>
+                                      _mapController = Completer();
+
+                                  return GoogleMap(
+                                    mapType: MapType.normal,
+                                    mapToolbarEnabled: false,
+                                    myLocationEnabled: true,
+                                    myLocationButtonEnabled: false,
+                                    initialCameraPosition: CameraPosition(
+                                      target: LatLng(
+                                        snapshot.data.latitude,
+                                        snapshot.data.longitude,
+                                      ),
+                                      zoom: 15,
+                                    ),
+                                    onMapCreated:
+                                        (GoogleMapController controller) {
+                                      _mapController.complete(controller);
+                                    },
+                                    markers: provider.markers,
+                                  );
+                                  break;
+                              }
+                            });
+                      },
                     ),
                     Positioned(
                       top: 15,
@@ -131,20 +159,25 @@ class _MapTabState extends State<MapTab> with SingleTickerProviderStateMixin {
                     ),
                     if (_showDraggableSheet)
                       SizedBox.expand(
-                        child: SlideTransition(
-                          position: _tween.animate(_animationController),
-                          child: DraggableScrollableSheet(
-                            initialChildSize: 0.50,
-                            minChildSize: 0.5,
-                            maxChildSize: 0.95,
-                            builder: (context, scrollController) => MarkerSheet(
-                              id: _spotId,
-                              scrollController: scrollController,
-                              onClose: () {
-                                if (_animationController.isCompleted) {
-                                  _animationController.reverse();
-                                }
-                              },
+                        child: ScrollConfiguration(
+                          behavior: CustomScrollBehavior(),
+                          child: SlideTransition(
+                            position: _tween.animate(_animationController),
+                            child: DraggableScrollableSheet(
+                              initialChildSize: 0.50,
+                              minChildSize: 0.5,
+                              maxChildSize: 0.95,
+                              builder: (context, scrollController) =>
+                                  MarkerSheet(
+                                id: _spotId,
+                                scrollController: scrollController,
+                                anonymous: widget.anonymous,
+                                onClose: () {
+                                  if (_animationController.isCompleted) {
+                                    _animationController.reverse();
+                                  }
+                                },
+                              ),
                             ),
                           ),
                         ),
@@ -153,7 +186,7 @@ class _MapTabState extends State<MapTab> with SingleTickerProviderStateMixin {
                 );
                 break;
               default:
-                return Container();
+                return Text('error : ' + snapshot.error);
                 break;
             }
           },

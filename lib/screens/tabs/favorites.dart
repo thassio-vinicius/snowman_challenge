@@ -5,9 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:snowmanchallenge/features/favorites/spot_card.dart';
 import 'package:snowmanchallenge/models/tourist_spot.dart';
 import 'package:snowmanchallenge/providers/firestore_provider.dart';
-import 'package:snowmanchallenge/utils/hexcolor.dart';
-
 import 'package:snowmanchallenge/shared/components/custom_progress_indicator.dart';
+import 'package:snowmanchallenge/utils/hexcolor.dart';
 
 class FavoritesTab extends StatefulWidget {
   const FavoritesTab({this.anonymous = false});
@@ -40,7 +39,11 @@ class _FavoritesTabState extends State<FavoritesTab> {
         title: Text('Favorites'),
         centerTitle: true,
       ),
-      body: _buildFavorites(),
+      body: widget.anonymous
+          ? Center(
+              child: Image.asset('assets/images/logo.png'),
+            )
+          : _buildFavorites(),
     );
   }
 
@@ -61,10 +64,6 @@ class _FavoritesTabState extends State<FavoritesTab> {
                 .where((element) => element.data['isFavorite'] == true)
                 .toList();
 
-            print('spots list fav: ' + spots.toString());
-            print('spots list fav: ' + spots.length.toString());
-
-            if (widget.anonymous == true) return _buildNoFavorites();
             if (spots.isNotEmpty) return _populateFavorites(spots);
             return _buildNoFavorites();
         }

@@ -1,11 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:snowmanchallenge/features/authentication/components/anonymous_button.dart';
 import 'package:snowmanchallenge/features/authentication/components/login_button.dart';
 import 'package:snowmanchallenge/features/authentication/signup.dart';
-import 'package:snowmanchallenge/providers/authentication_provider.dart';
 import 'package:snowmanchallenge/shared/components/custom_progress_indicator.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
@@ -23,9 +21,6 @@ class _SignOptionsState extends State<SignOptions> {
 
   @override
   void didChangeDependencies() {
-    _stream = Provider.of<AuthenticationProvider>(context, listen: false)
-        .firebaseAuth
-        .onAuthStateChanged;
     super.didChangeDependencies();
   }
 
@@ -77,7 +72,6 @@ class _SignOptionsState extends State<SignOptions> {
                     : _buildOptionsContent(context),
               ),
             );
-            break;
         }
       },
     );

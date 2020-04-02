@@ -83,32 +83,35 @@ class _NewSpotModalState extends State<NewSpotModal> {
                         return ImageSelect();
                       } else {
                         return Stack(
-                          children: <Widget>[
-                            Positioned.fill(
-                              child:
-                                  Image.file(provider.image, fit: BoxFit.cover),
-                            ),
-                            Positioned(
-                              top: 15,
-                              left: 15,
-                              child: InkWell(
-                                onTap: () => provider.isImageSelected = false,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.black.withOpacity(0.6),
-                                      shape: BoxShape.circle),
-                                  width: 25,
-                                  height: 25,
-                                  child: Icon(
-                                    Icons.close,
-                                    size: 20,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
+                            children: provider.image != null
+                                ? <Widget>[
+                                    Positioned.fill(
+                                      child: Image.file(provider.image,
+                                          fit: BoxFit.cover),
+                                    ),
+                                    Positioned(
+                                      top: 15,
+                                      left: 15,
+                                      child: InkWell(
+                                        onTap: () =>
+                                            provider.isImageSelected = false,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color:
+                                                  Colors.black.withOpacity(0.6),
+                                              shape: BoxShape.circle),
+                                          width: 25,
+                                          height: 25,
+                                          child: Icon(
+                                            Icons.close,
+                                            size: 20,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ]
+                                : <Widget>[ImageSelect()]);
                       }
                     }),
                   ),
@@ -192,12 +195,15 @@ class _NewSpotModalState extends State<NewSpotModal> {
         (position.first.position.latitude + position.first.position.longitude)
             .toString();
 
-    String owner = Provider.of<UserProvider>(context, listen: false).user.uid;
+    UserProvider userProvider =
+        Provider.of<UserProvider>(context, listen: false);
+
+    String owner = userProvider?.user?.email ?? userProvider?.customUser?.email;
 
     var imageProvider =
         Provider.of<ImagePickerProvider>(context, listen: false);
 
-    if (imageProvider.image.existsSync()) {
+    if (imageProvider.image != null && imageProvider.image.existsSync()) {
       await imageProvider.uploadImage(image: imageProvider.image);
     }
 
@@ -217,6 +223,7 @@ class _NewSpotModalState extends State<NewSpotModal> {
         .addSpot(newSpot.toJson());
 
     imageProvider.isImageSelected = false;
+    imageProvider.imageUrl = null;
 
     Navigator.pop(context);
   }

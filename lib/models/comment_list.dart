@@ -10,10 +10,6 @@ class CommentList extends Equatable {
   factory CommentList.fromJson(List<dynamic> json) {
     List<Comment> comments = List<Comment>();
     comments = json.map((e) => Comment.fromJson(e)).toList();
-
-    print('json ' + json.toString());
-    print('comments ' + comments.toString());
-
     return CommentList(comments: comments);
   }
 

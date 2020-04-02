@@ -4,8 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:snowmanchallenge/features/update_marker/add_comment.dart';
 import 'package:snowmanchallenge/features/update_marker/add_description.dart';
 import 'package:snowmanchallenge/features/update_marker/components/comment_section.dart';
-import 'package:snowmanchallenge/features/update_marker/empty_description.dart';
 import 'package:snowmanchallenge/features/update_marker/components/section_button.dart';
+import 'package:snowmanchallenge/features/update_marker/empty_description.dart';
 import 'package:snowmanchallenge/features/update_marker/marker_sheet.dart';
 import 'package:snowmanchallenge/models/comment_list.dart';
 import 'package:snowmanchallenge/providers/firestore_provider.dart';
@@ -17,6 +17,7 @@ class Section extends StatefulWidget {
     @required this.id,
     @required this.section,
     @required this.title,
+    @required this.anonymous,
     this.rating = 0,
     this.percentageWidth = 0.70,
     this.comments,
@@ -34,6 +35,7 @@ class Section extends StatefulWidget {
   final String title;
   final CommentList comments;
   final bool isFavorite;
+  final bool anonymous;
   final String description;
 
   @override
@@ -106,27 +108,30 @@ class _SectionState extends State<Section> {
           SectionButton(
               isFavoriteButton: true,
               isFavorite: _isFavorite,
-              onTap: () {
-                _toggleValue();
+              onTap: widget.anonymous
+                  ? () {}
+                  : () {
+                      _toggleValue();
 
-                Provider.of<FireStoreProvider>(context, listen: false)
-                    .updateSpot(
-                        id: widget.id, key: 'isFavorite', value: _isFavorite);
-
-                print('isFavorite state:' + _isFavorite.toString());
-                //print('isFavorite db:' + widget.isFavorite.toString());
-
-                return widget.notifyParent;
-              }),
+                      Provider.of<FireStoreProvider>(context, listen: false)
+                          .updateSpot(
+                              id: widget.id,
+                              key: 'isFavorite',
+                              value: _isFavorite);
+                      return widget.notifyParent;
+                    }),
         if (widget.section == DescriptionSection.commentSection)
           SectionButton(
               isFavoriteButton: false,
-              onTap: () => showDialog(
-                  context: context,
-                  builder: (context) => AddComment(
-                        id: widget.id,
-                        commentsLength: widget.comments.comments.length,
-                      ))),
+              onTap: widget.anonymous
+                  ? () {}
+                  : () => showDialog(
+                      context: context,
+                      builder: (context) => AddComment(
+                            id: widget.id,
+                            commentsLength:
+                                widget?.comments?.comments?.length ?? 0,
+                          ))),
       ],
     );
   }
@@ -173,6 +178,7 @@ class _SectionState extends State<Section> {
         } else {
           return EmptyDescription(
               isCommentSection: false,
+              anonymous: widget.anonymous,
               onTap: () => showDialog(
                   context: context,
                   builder: (builder) => AddDescription(
@@ -199,11 +205,13 @@ class _SectionState extends State<Section> {
             alignment: Alignment.topCenter,
             child: EmptyDescription(
                 isCommentSection: true,
+                anonymous: widget.anonymous,
                 onTap: () => showDialog(
                     context: context,
                     builder: (builder) => AddComment(
                           id: widget.id,
-                          commentsLength: widget.comments.comments.length,
+                          commentsLength:
+                              widget?.comments?.comments?.length ?? 0,
                         ))),
           );
         }

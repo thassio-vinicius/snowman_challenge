@@ -10,9 +10,11 @@ import 'package:snowmanchallenge/shared/components/custom_textbox.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
 class AddComment extends StatefulWidget {
-  const AddComment({@required this.id, @required this.commentsLength});
+  const AddComment(
+      {@required this.id, @required this.commentsLength, this.notifyParent});
 
   final String id;
+  final Function notifyParent;
   final int commentsLength;
 
   @override
@@ -117,8 +119,11 @@ class _AddCommentState extends State<AddComment> {
   }
 
   _newComment(rating) {
+    UserProvider userProvider =
+        Provider.of<UserProvider>(context, listen: false);
+
     String owner =
-        Provider.of<UserProvider>(context, listen: false).user.displayName;
+        userProvider.user.displayName ?? userProvider.customUser.displayName;
 
     Comment comment =
         Comment(comment: _commentController.text, rating: rating, owner: owner);

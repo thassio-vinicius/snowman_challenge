@@ -69,24 +69,10 @@ class LoginButton extends StatelessWidget {
     Provider.of<UserProvider>(context, listen: false).saveUserInfo(user.user);
 
     Navigator.pushReplacementNamed(context, '/home');
-    /*
-    Navigator.pushReplacement(
-      context,
-      PageRouteBuilder(
-        pageBuilder: (context, animation1, animation2) => Home(),
-        transitionsBuilder: (context, animation1, animation2, child) =>
-            FadeTransition(opacity: animation1, child: child),
-        transitionDuration: Duration(milliseconds: 500),
-      ),
-    );
-
-     */
   }
 
   _signUp(context) async {
     var user = Provider.of<UserProvider>(context, listen: false).user;
-
-    print('USER ' + user.toString());
 
     if (user == null) {
       AuthResult auth =

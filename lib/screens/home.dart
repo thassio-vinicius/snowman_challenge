@@ -1,12 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:snowmanchallenge/models/tab.dart';
-import 'package:snowmanchallenge/providers/authentication_provider.dart';
+import 'package:snowmanchallenge/providers/user_provider.dart';
 import 'package:snowmanchallenge/screens/tabs/favorites.dart';
 import 'package:snowmanchallenge/screens/tabs/map.dart';
 import 'package:snowmanchallenge/screens/tabs/user_account.dart';
-import 'package:snowmanchallenge/shared/components/custom_progress_indicator.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
 
 class Home extends StatefulWidget {
@@ -21,37 +19,34 @@ class _HomeState extends State<Home> {
     return Scaffold(
       body: SafeArea(
         top: false,
-        child: StreamBuilder<FirebaseUser>(
-          stream: Provider.of<AuthenticationProvider>(context)
-              .firebaseAuth
-              .onAuthStateChanged,
-          builder: (context, snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.waiting:
-                return Center(
-                  child: CustomProgressIndicator(),
-                );
-                break;
-              default:
-                bool anonymous = false;
+        child: Consumer<UserProvider>(
+          builder: (context, provider, child) {
+            bool anonymous = false;
 
-                ///This is a workaround, because if i sign in with facebook and
-                ///restart the app later, firebase keeps a non-anonymous access
-                ///token and passes it to the new anonymous user somehow. Since
-                ///i don't have time to deal with this, i ended up leaving this
-                ///simple nullity-check solution for now.
+            ///This is a workaround, because if i sign in with facebook and
+            ///restart the app later, firebase keeps a non-anonymous access
+            ///token and passes it to the new anonymous user somehow. Since
+            ///i don't have time to deal with this, i ended up leaving this
+            ///simple nullity-check solution for now.
 
-                if (snapshot.data.displayName == null) anonymous = true;
+            var user;
 
-                return IndexedStack(
-                  index: _currentIndex,
-                  children: <Widget>[
-                    FavoritesTab(anonymous: anonymous),
-                    MapTab(anonymous: anonymous),
-                    AccountTab(anonymous: anonymous),
-                  ],
-                );
+            if (provider.user == null) {
+              user = provider.customUser;
+            } else {
+              user = provider.user;
             }
+
+            if (user == null) anonymous = true;
+
+            return IndexedStack(
+              index: _currentIndex,
+              children: <Widget>[
+                FavoritesTab(anonymous: anonymous),
+                MapTab(anonymous: anonymous),
+                AccountTab(anonymous: anonymous),
+              ],
+            );
           },
         ),
       ),

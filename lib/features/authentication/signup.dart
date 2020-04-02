@@ -1,14 +1,13 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:snowmanchallenge/models/user.dart';
 import 'package:snowmanchallenge/providers/authentication_provider.dart';
 import 'package:snowmanchallenge/providers/user_provider.dart';
+import 'package:snowmanchallenge/shared/components/custom_button.dart';
+import 'package:snowmanchallenge/shared/components/custom_textbox.dart';
 import 'package:snowmanchallenge/utils/hexcolor.dart';
-
-import 'file:///C:/Users/Usuario/AndroidStudioProjects/snowman_challenge/lib/shared/components/custom_button.dart';
-import 'file:///C:/Users/Usuario/AndroidStudioProjects/snowman_challenge/lib/shared/components/custom_textbox.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -115,34 +114,38 @@ class _SignUpState extends State<SignUp> {
   }
 
   _signUp() async {
-    FirebaseUser firebaseUser =
-        Provider.of<UserProvider>(context, listen: false).user;
+    UserProvider userProvider =
+        Provider.of<UserProvider>(context, listen: false);
     var authenticationProvider =
         Provider.of<AuthenticationProvider>(context, listen: false);
 
     var user = User(
       displayName: _nameController.value.text,
       email: _emailController.value.text,
-      id: Provider.of<UserProvider>(context, listen: false).user.uid,
-      urlPhoto: Provider.of<UserProvider>(context, listen: false).user.photoUrl,
-    ).toJson();
+      uid: userProvider.user.uid,
+      photoUrl: userProvider.user.photoUrl,
+    );
 
-    if (firebaseUser != null) {
-      print('email value:' + _emailController.value.text);
-      print('email: ' + _emailController.text);
+    if (userProvider.user != null) {
+      bool result =
+          await authenticationProvider.checkAndAddUser(user: user.toJson());
 
-      bool result = await authenticationProvider.checkNaddUser(
-          user: user, firebaseUser: firebaseUser);
-
-      //returns true if there's no match between the input e-mail and the database emails.
+      ///returns true if there's no match between the input e-mail and the database emails.
 
       if (result) {
-        Navigator.pushReplacementNamed(context, '/home');
-        print(result.toString());
+        if (_emailController.value.text != userProvider.user.email) {
+          await userProvider.deleteFirebaseUser();
+          user.copyWith(
+              uid: FieldPath.documentId.toString(),
+              displayName: _nameController.value.text,
+              email: _emailController.value.text,
+              photoUrl: '');
+          userProvider.saveCustomUser(user);
+          Navigator.pushReplacementNamed(context, '/home');
+        }
       } else {
         setState(() {
           _emailTaken = true;
-          print(result.toString());
         });
       }
     }

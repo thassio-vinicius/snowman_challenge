@@ -35,14 +35,18 @@ class FireStoreProvider extends ChangeNotifier {
     }
   }
 
-  void addUser(Map<String, dynamic> user) {
-    _database.collection('users').add(user);
+  void addUser(Map<String, dynamic> user, String email) async {
+    await _database.collection('users').document(email).setData(user);
 
     notifyListeners();
   }
 
-  void removeSpot(String path) {
-    _database.collection('spots').document(path).delete();
+  void updateUser({Map<String, dynamic> data, var uid}) async {
+    _database.document('users/$uid').updateData(data);
+  }
+
+  void removeSpot(String path) async {
+    await _database.collection('spots').document(path).delete();
 
     notifyListeners();
   }

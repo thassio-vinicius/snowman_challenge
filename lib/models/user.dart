@@ -5,44 +5,44 @@ class User extends Equatable {
   const User(
       {@required this.displayName,
       @required this.email,
-      @required this.urlPhoto,
-      @required this.id});
+      @required this.photoUrl,
+      @required this.uid});
 
-  final String id;
+  final String uid;
   final String displayName;
   final String email;
-  final String urlPhoto;
+  final String photoUrl;
 
   User copyWith({
-    String id,
+    String uid,
     String displayName,
     String email,
-    String urlPhoto,
+    String photoUrl,
   }) {
     return User(
-      id: id ?? this.id,
+      uid: uid ?? this.uid,
       displayName: displayName ?? this.displayName,
       email: email ?? this.email,
-      urlPhoto: urlPhoto ?? this.urlPhoto,
+      photoUrl: photoUrl ?? this.photoUrl,
     );
   }
 
   factory User.fromJson({Map<String, dynamic> json}) {
     return User(
-      id: json['id'],
+      uid: json['uid'],
       displayName: json['displayName'],
       email: json['email'],
-      urlPhoto: json['urlPhoto'],
+      photoUrl: json['photoUrl'],
     );
   }
 
   Map<String, dynamic> toJson() => {
-        'id': this.id,
+        'uid': this.uid,
         'displayName': this.displayName,
         'email': this.email,
-        'urlPhoto': this.urlPhoto,
+        'photoUrl': this.photoUrl,
       };
 
   @override
-  List<Object> get props => [displayName, email, urlPhoto, id];
+  List<Object> get props => [displayName, email, photoUrl, uid];
 }
