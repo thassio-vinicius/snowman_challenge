@@ -31,15 +31,27 @@ class _MapTabState extends State<MapTab> with SingleTickerProviderStateMixin {
   Tween<Offset> _tween = Tween(begin: Offset(0, 1), end: Offset(0, 0));
   bool _showDraggableSheet = false;
   Stream<QuerySnapshot> _stream;
+  bool _gotLocation = false;
   String _spotId;
+  LatLng _position;
 
   Future<Position> _getUserPosition() async {
-    return await Geolocator().getCurrentPosition();
+    return await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.medium);
   }
 
   @override
   void initState() {
     super.initState();
+    _getUserPosition().then((value) {
+      setState(() {
+        _position = LatLng(
+          value.latitude,
+          value.longitude,
+        );
+        _gotLocation = true;
+      });
+    });
     _animationController =
         AnimationController(vsync: this, duration: _duration);
   }
@@ -87,6 +99,15 @@ class _MapTabState extends State<MapTab> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    ///Since this project involves multiple tabs and modals, the controller gets
+    ///disposed every time i switch from map tab to another screen. And the completer
+    ///doesn't reset once it's completed. That's why the solution i found was to
+    ///declarate the controller inside build method. It ensures the controller
+    ///always rebuilds when i switch to map tab. Maybe there's a better solution,
+    ///but this was the fastest one.
+
+    final Completer<GoogleMapController> _mapController = Completer();
+
     return Scaffold(
       body: SafeArea(
         child: StreamBuilder<QuerySnapshot>(
@@ -104,48 +125,26 @@ class _MapTabState extends State<MapTab> with SingleTickerProviderStateMixin {
                   children: <Widget>[
                     Consumer<MarkersProvider>(
                       builder: (context, provider, child) {
-                        return FutureBuilder<Position>(
-                            future: _getUserPosition(),
-                            builder: (context, snapshot) {
-                              switch (snapshot.connectionState) {
-                                case ConnectionState.waiting:
-                                  return Center(
-                                    child: CustomProgressIndicator(),
-                                  );
-                                  break;
-                                default:
-
-                                  ///Since this project involves multiple tabs and modals, the controller gets
-                                  ///disposed every time i switch from map tab to another screen. And the completer
-                                  ///doesn't reset once it's completed. That's why the solution i found was to
-                                  ///declarate the controller inside build method. It ensures the controller
-                                  ///always rebuilds when i switch to map tab. Maybe there's a better solution,
-                                  ///but this was the fastest one.
-
-                                  final Completer<GoogleMapController>
-                                      _mapController = Completer();
-
-                                  return GoogleMap(
-                                    mapType: MapType.normal,
-                                    mapToolbarEnabled: false,
-                                    myLocationEnabled: true,
-                                    myLocationButtonEnabled: false,
-                                    initialCameraPosition: CameraPosition(
-                                      target: LatLng(
-                                        snapshot.data.latitude,
-                                        snapshot.data.longitude,
-                                      ),
-                                      zoom: 15,
-                                    ),
-                                    onMapCreated:
-                                        (GoogleMapController controller) {
-                                      _mapController.complete(controller);
-                                    },
-                                    markers: provider.markers,
-                                  );
-                                  break;
-                              }
-                            });
+                        return _gotLocation
+                            ? GoogleMap(
+                                mapType: MapType.normal,
+                                mapToolbarEnabled: false,
+                                myLocationEnabled: true,
+                                myLocationButtonEnabled: false,
+                                initialCameraPosition: CameraPosition(
+                                  target: _position,
+                                  zoom: 15,
+                                ),
+                                onMapCreated:
+                                    (GoogleMapController controller) async {
+                                  _mapController.complete(controller);
+                                  await _getUserPosition();
+                                },
+                                markers: provider.markers,
+                              )
+                            : Center(
+                                child: CustomProgressIndicator(),
+                              );
                       },
                     ),
                     Positioned(
