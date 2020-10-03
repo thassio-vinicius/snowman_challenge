@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -78,7 +76,7 @@ class _ImageSelectState extends State<ImageSelect> {
   _setCurrentImage() async {
     ImageSource source = _imageProvider.imageSource;
 
-    File image = await ImagePicker.pickImage(source: source);
+    PickedFile image = await ImagePicker().getImage(source: source);
 
     _imageProvider.image = image;
   }

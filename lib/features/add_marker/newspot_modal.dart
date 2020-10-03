@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:snowmanchallenge/features/add_marker/components/custom_colorpicker.dart';
@@ -86,7 +89,8 @@ class _NewSpotModalState extends State<NewSpotModal> {
                             children: provider.image != null
                                 ? <Widget>[
                                     Positioned.fill(
-                                      child: Image.file(provider.image,
+                                      child: Image.file(
+                                          File(provider.image.path),
                                           fit: BoxFit.cover),
                                     ),
                                     Positioned(
@@ -179,31 +183,31 @@ class _NewSpotModalState extends State<NewSpotModal> {
 
 
      */
-    return await Geolocator()
-        .placemarkFromAddress(position, localeIdentifier: 'pt_BR');
+    return await Geocoder.local.findAddressesFromQuery(position);
   }
 
   _addMarker() async {
     LocationOptions(forceAndroidLocationManager: true);
 
-    var position = await Geolocator().placemarkFromAddress(
+    var position = await Geocoder.local.findAddressesFromQuery(
       _locationController.text,
-      localeIdentifier: 'pt_BR',
     );
 
-    String markerId =
-        (position.first.position.latitude + position.first.position.longitude)
-            .toString();
+    String markerId = (position.first.coordinates.latitude +
+            position.first.coordinates.longitude)
+        .toString();
 
     UserProvider userProvider =
         Provider.of<UserProvider>(context, listen: false);
 
-    String owner = userProvider?.user?.email ?? userProvider?.customUser?.email;
+    String owner =
+        userProvider?.user?.email ?? userProvider?.firestoreUser?.email;
 
     var imageProvider =
         Provider.of<ImagePickerProvider>(context, listen: false);
 
-    if (imageProvider.image != null && imageProvider.image.existsSync()) {
+    if (imageProvider.image != null &&
+        File(imageProvider.image.path).existsSync()) {
       await imageProvider.uploadImage(image: imageProvider.image);
     }
 

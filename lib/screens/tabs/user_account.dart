@@ -29,7 +29,7 @@ class _AccountTabState extends State<AccountTab> {
     UserProvider userProvider =
         Provider.of<UserProvider>(context, listen: false);
 
-    _user = userProvider.user ?? userProvider.customUser;
+    _user = userProvider.user ?? userProvider.firestoreUser;
     _stream =
         Provider.of<FireStoreProvider>(context, listen: false).getStreamSpots();
     super.didChangeDependencies();
@@ -65,16 +65,16 @@ class _AccountTabState extends State<AccountTab> {
               );
               break;
             default:
-              List<DocumentSnapshot> list = snapshot.data.documents
+              List<DocumentSnapshot> list = snapshot.data.docs
                   .where((element) =>
-                      element.data['owner'] == _user?.email ?? _user?.email)
+                      element.data()['owner'] == _user?.email ?? _user?.email)
                   .toList();
 
               List<TouristSpot> mySpots = [];
 
               for (int i = 0; i < list.length; i++) {
                 if (!mySpots.contains(list[i].data))
-                  mySpots.add(TouristSpot.fromJson(list[i].data));
+                  mySpots.add(TouristSpot.fromJson(list[i].data()));
               }
 
               return Center(
@@ -84,7 +84,7 @@ class _AccountTabState extends State<AccountTab> {
                   children: <Widget>[
                     CircleAvatar(
                         radius: 35,
-                        backgroundImage: _user is FirebaseUser
+                        backgroundImage: _user is User
                             ? NetworkImage(_user.photoUrl)
                             : AssetImage('assets/images/logo.png')),
                     Flexible(

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -36,8 +37,8 @@ class _MapTabState extends State<MapTab> with SingleTickerProviderStateMixin {
   LatLng _position;
 
   Future<Position> _getUserPosition() async {
-    return await Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.medium);
+    return await GeolocatorPlatform.instance
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
   }
 
   @override
@@ -57,17 +58,17 @@ class _MapTabState extends State<MapTab> with SingleTickerProviderStateMixin {
   }
 
   _getMarkerPosition(String address) async {
-    var position = await Geolocator().placemarkFromAddress(address);
+    var position = await Geocoder.local.findAddressesFromQuery(address);
 
     return LatLng(
-      position.first.position.latitude,
-      position.first.position.longitude,
+      position.first.coordinates.latitude,
+      position.first.coordinates.longitude,
     );
   }
 
   _populateSpots({List<DocumentSnapshot> documents}) async {
     for (int i = 0; i < documents.length; i++) {
-      TouristSpot spot = TouristSpot.fromJson(documents[i].data);
+      TouristSpot spot = TouristSpot.fromJson(documents[i].data());
       Marker marker = Marker(
         markerId: MarkerId(spot.id),
         position: await _getMarkerPosition(spot.location),
@@ -78,7 +79,7 @@ class _MapTabState extends State<MapTab> with SingleTickerProviderStateMixin {
         ),
         onTap: () {
           setState(() {
-            _spotId = documents[i].documentID;
+            _spotId = documents[i].id;
             _showDraggableSheet = !_showDraggableSheet;
           });
           Timer(Duration(milliseconds: 200), () => _animationHandler());
@@ -118,8 +119,8 @@ class _MapTabState extends State<MapTab> with SingleTickerProviderStateMixin {
                 return Center(child: CustomProgressIndicator());
                 break;
               case ConnectionState.active:
-                if (snapshot.data.documents.isNotEmpty) {
-                  _populateSpots(documents: snapshot.data.documents);
+                if (snapshot.data.docs.isNotEmpty) {
+                  _populateSpots(documents: snapshot.data.docs);
                 }
                 return Stack(
                   children: <Widget>[

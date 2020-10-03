@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:snowmanchallenge/providers/authentication_provider.dart';
@@ -9,10 +10,13 @@ import 'package:snowmanchallenge/providers/user_provider.dart';
 import 'package:snowmanchallenge/screens/home.dart';
 import 'package:snowmanchallenge/screens/sign_options.dart';
 
-void main() {
+void main() async {
   final signOptionsFalse = SignOptions(isSignUpOption: false);
   final signOptionsTrue = SignOptions(isSignUpOption: true);
   final home = Home();
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
 
   runApp(MultiProvider(
     providers: [

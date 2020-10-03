@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
-class User extends Equatable {
-  const User(
+class FirestoreUser extends Equatable {
+  const FirestoreUser(
       {@required this.displayName,
       @required this.email,
       @required this.photoUrl,
@@ -13,13 +13,13 @@ class User extends Equatable {
   final String email;
   final String photoUrl;
 
-  User copyWith({
+  FirestoreUser copyWith({
     String uid,
     String displayName,
     String email,
     String photoUrl,
   }) {
-    return User(
+    return FirestoreUser(
       uid: uid ?? this.uid,
       displayName: displayName ?? this.displayName,
       email: email ?? this.email,
@@ -27,8 +27,8 @@ class User extends Equatable {
     );
   }
 
-  factory User.fromJson({Map<String, dynamic> json}) {
-    return User(
+  factory FirestoreUser.fromJson({Map<String, dynamic> json}) {
+    return FirestoreUser(
       uid: json['uid'],
       displayName: json['displayName'],
       email: json['email'],

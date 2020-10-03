@@ -1,17 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:snowmanchallenge/models/user.dart';
+import 'package:snowmanchallenge/models/firestore_user.dart';
 
 class UserProvider extends ChangeNotifier {
-  FirebaseUser _user;
+  User _user;
 
-  User _customUser;
+  FirestoreUser _firestoreUser;
 
-  User get customUser => _customUser;
+  FirestoreUser get firestoreUser => _firestoreUser;
 
-  FirebaseUser get user => _user;
+  User get user => _user;
 
-  saveUserInfo(FirebaseUser user) {
+  saveUserInfo(User user) {
     _user = user;
 
     notifyListeners();
@@ -23,8 +23,8 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  saveCustomUser(User user) {
-    _customUser = user;
+  saveFirestoreUser(FirestoreUser user) {
+    _firestoreUser = user;
 
     notifyListeners();
   }

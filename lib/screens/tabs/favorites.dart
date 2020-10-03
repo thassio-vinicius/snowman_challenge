@@ -60,8 +60,8 @@ class _FavoritesTabState extends State<FavoritesTab> {
             );
             break;
           default:
-            List<DocumentSnapshot> spots = snapshot.data.documents
-                .where((element) => element.data['isFavorite'] == true)
+            List<DocumentSnapshot> spots = snapshot.data.docs
+                .where((element) => element.data()['isFavorite'] == true)
                 .toList();
 
             if (spots.isNotEmpty) return _populateFavorites(spots);

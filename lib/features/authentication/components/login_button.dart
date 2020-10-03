@@ -37,15 +37,13 @@ class LoginButton extends StatelessWidget {
                 height: 40,
                 child: Image.asset(
                   isSignInButton
-                      ? 'assets/images/facebook_signin.png'
-                      : 'assets/images/facebook_signup.png',
+                      ? 'assets/images/google_signin.png'
+                      : 'assets/images/google_signup.png',
                   fit: BoxFit.scaleDown,
                 ),
               ),
               Text(
-                isSignInButton
-                    ? 'Sign in with Facebook'
-                    : 'Sign up with Facebook',
+                isSignInButton ? 'Sign in with Google' : 'Sign up with Google',
                 style: GoogleFonts.nunito(
                   textStyle: TextStyle(
                       color:
@@ -62,9 +60,9 @@ class LoginButton extends StatelessWidget {
   }
 
   _signIn(context) async {
-    AuthResult user =
+    UserCredential user =
         await Provider.of<AuthenticationProvider>(context, listen: false)
-            .facebookSignIn();
+            .googleSignOption();
 
     Provider.of<UserProvider>(context, listen: false).saveUserInfo(user.user);
 
@@ -75,9 +73,9 @@ class LoginButton extends StatelessWidget {
     var user = Provider.of<UserProvider>(context, listen: false).user;
 
     if (user == null) {
-      AuthResult auth =
+      UserCredential auth =
           await Provider.of<AuthenticationProvider>(context, listen: false)
-              .facebookSignUp();
+              .googleSignOption();
 
       Provider.of<UserProvider>(context, listen: false).saveUserInfo(auth.user);
 

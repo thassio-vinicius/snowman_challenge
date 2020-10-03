@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:snowmanchallenge/models/user.dart';
+import 'package:snowmanchallenge/models/firestore_user.dart';
 import 'package:snowmanchallenge/providers/authentication_provider.dart';
 import 'package:snowmanchallenge/providers/user_provider.dart';
 import 'package:snowmanchallenge/shared/components/custom_button.dart';
@@ -119,11 +119,11 @@ class _SignUpState extends State<SignUp> {
     var authenticationProvider =
         Provider.of<AuthenticationProvider>(context, listen: false);
 
-    var user = User(
+    var user = FirestoreUser(
       displayName: _nameController.value.text,
       email: _emailController.value.text,
       uid: userProvider.user.uid,
-      photoUrl: userProvider.user.photoUrl,
+      photoUrl: userProvider.user.photoURL,
     );
 
     if (userProvider.user != null) {
@@ -140,7 +140,7 @@ class _SignUpState extends State<SignUp> {
               displayName: _nameController.value.text,
               email: _emailController.value.text,
               photoUrl: '');
-          userProvider.saveCustomUser(user);
+          userProvider.saveFirestoreUser(user);
           Navigator.pushReplacementNamed(context, '/home');
         }
       } else {

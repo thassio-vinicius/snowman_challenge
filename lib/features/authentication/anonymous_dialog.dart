@@ -31,7 +31,7 @@ class AnonymousDialog extends StatelessWidget {
           children: <Widget>[
             GestureDetector(
               onTap: () async {
-                AuthResult auth = await Provider.of<AuthenticationProvider>(
+                UserCredential auth = await Provider.of<AuthenticationProvider>(
                         context,
                         listen: false)
                     .signInAnonymously();

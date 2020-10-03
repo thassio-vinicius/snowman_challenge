@@ -37,8 +37,8 @@ class _MarkerSheetState extends State<MarkerSheet> {
         .getSpotById(widget.id);
 
     _future.then((value) {
-      _rating = value.data['rating'];
-      _isFavorite = value.data['isFavorite'];
+      _rating = value.data()['rating'];
+      _isFavorite = value.data()['isFavorite'];
     });
     super.didChangeDependencies();
   }
@@ -91,7 +91,7 @@ class _MarkerSheetState extends State<MarkerSheet> {
                               width: MediaQuery.of(context).size.width * 0.95,
                               height: MediaQuery.of(context).size.height * 0.20,
                               child: _buildHeader(
-                                  snapshot.data.data['mainPicture'])),
+                                  snapshot.data.data()['mainPicture'])),
                           Container(
                             color: Colors.white,
                             width: MediaQuery.of(context).size.width * 0.95,
@@ -133,10 +133,10 @@ class _MarkerSheetState extends State<MarkerSheet> {
           anonymous: widget.anonymous,
           id: widget.id,
           percentageHeight: 0.07,
-          title: snapshot.data.data['title'],
-          description: snapshot.data.data['location'],
+          title: snapshot.data.data()['title'],
+          description: snapshot.data.data()['location'],
           section: DescriptionSection.spotTitleSection,
-          isFavorite: snapshot.data.data['isFavorite'],
+          isFavorite: snapshot.data.data()['isFavorite'],
         ),
         Container(
           height: MediaQuery.of(context).size.height * 0.05,
@@ -147,7 +147,7 @@ class _MarkerSheetState extends State<MarkerSheet> {
           id: widget.id,
           percentageHeight: 0.08,
           title: 'Category',
-          description: snapshot.data.data['category'],
+          description: snapshot.data.data()['category'],
           section: DescriptionSection.categorySection,
         ),
         Section(
@@ -155,7 +155,7 @@ class _MarkerSheetState extends State<MarkerSheet> {
           id: widget.id,
           title: 'About',
           percentageHeight: 0.20,
-          description: snapshot.data.data['description'],
+          description: snapshot.data.data()['description'],
           section: DescriptionSection.aboutSection,
         ),
         Section(
@@ -163,8 +163,8 @@ class _MarkerSheetState extends State<MarkerSheet> {
           id: widget.id,
           title: 'Comments',
           percentageHeight: 0.30,
-          comments: snapshot.data.data['comments'] != null
-              ? CommentList.fromJson(snapshot.data.data['comments'])
+          comments: snapshot.data.data()['comments'] != null
+              ? CommentList.fromJson(snapshot.data.data()['comments'])
               : null,
           section: DescriptionSection.commentSection,
         ),

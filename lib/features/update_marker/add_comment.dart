@@ -123,7 +123,7 @@ class _AddCommentState extends State<AddComment> {
         Provider.of<UserProvider>(context, listen: false);
 
     String owner =
-        userProvider.user.displayName ?? userProvider.customUser.displayName;
+        userProvider.user.displayName ?? userProvider.firestoreUser.displayName;
 
     Comment comment =
         Comment(comment: _commentController.text, rating: rating, owner: owner);

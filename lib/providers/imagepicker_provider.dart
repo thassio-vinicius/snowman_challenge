@@ -5,14 +5,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImagePickerProvider extends ChangeNotifier {
-  File _image;
+  PickedFile _image;
   ImageSource _imageSource;
   String _imageUrl;
   int _imageCounter = 0;
   bool _isImageSelected = false;
 
   bool get isImageSelected => _isImageSelected;
-  File get image => _image;
+  PickedFile get image => _image;
   ImageSource get imageSource => _imageSource;
   String get imageUrl => _imageUrl;
 
@@ -28,7 +28,7 @@ class ImagePickerProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  set image(File image) {
+  set image(PickedFile image) {
     _image = image;
     isImageSelected = true;
 
@@ -41,13 +41,13 @@ class ImagePickerProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  uploadImage({File image}) async {
+  uploadImage({PickedFile image}) async {
     _imageCounter++;
 
     StorageReference reference = FirebaseStorage.instance
         .ref()
         .child('spotPictures/${image.path + _imageCounter.toString()}');
-    StorageUploadTask uploadTask = reference.putFile(image);
+    StorageUploadTask uploadTask = reference.putFile(File(image.path));
     await uploadTask.onComplete;
     print('uploaded');
     reference.getDownloadURL().then((value) => _imageUrl = value);
